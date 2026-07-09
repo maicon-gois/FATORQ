@@ -1,0 +1,307 @@
+{
+  "seo": {
+    "title": "FatorQ | Desenvolvimento de Software com IA e Soluções Digitais",
+    "description": "Holding de software: desenvolvimento customizado, SaaS, design e infraestrutura para negócios, saúde e indústria. LIA CRM, D2 Labs e ecossistema FatorQ."
+  },
+  "brand": {
+    "name": "FatorQ",
+    "tagline": "Ferramentas digitais que impulsionam seu negócio",
+    "ecosystem": "A Product of FatorQ Ecosystem",
+    "logo": "/logo-fatorq.png",
+    "colors": {
+      "primary": "#06b6d4",
+      "primaryDark": "#0891b2",
+      "accent": "#38bdf8",
+      "silver": "#cbd5e1"
+    }
+  },
+  "contact": {
+    "whatsapp": "5553999640159",
+    "whatsappMessage": "Olá! Vim pelo site FatorQ e gostaria de agendar uma conversa com um especialista.",
+    "email": "contato@fatorq.com.br",
+    "city": "Rio Grande, RS — Brasil",
+    "meetLabel": "Agendar reunião (Google Meet)"
+  },
+  "hero": {
+    "headline": "Desenvolvimento de software potencializado por",
+    "headlineHighlight": "Inteligência Artificial",
+    "subheadline": "Desenvolvemos software customizado, SaaS e presença digital para negócios, saúde e indústria — acelerando sua transformação com produtos robustos, design premium e governança de entrega.",
+    "primaryCta": "Agendar conversa com especialista",
+    "secondaryCta": "Ver ecossistema FatorQ"
+  },
+  "approach": {
+    "label": "Nossa abordagem",
+    "title": "Software + IA com governança e performance",
+    "pillars": [
+      {
+        "title": "Escalabilidade e segurança para sistemas críticos",
+        "description": "Infra híbrida, releases governados, backups e operação real — do NOC à VPS em produção."
+      },
+      {
+        "title": "Soluções flexíveis que evoluem com o negócio",
+        "description": "SaaS vertical, sistemas sob medida e sites template — do MVP ao produto recorrente."
+      },
+      {
+        "title": "Squads enxutas que entendem negócio e tecnologia",
+        "description": "Diagnóstico no Meet, execução documentada e entrega com chancela FatorQ Ecosystem."
+      }
+    ]
+  },
+  "servicesEndToEnd": {
+    "label": "Parceiro end-to-end",
+    "title": "Para qualquer estágio, somos seu parceiro digital completo",
+    "subtitle": "Do branding ao backend — quatro frentes integradas sob a holding FatorQ.",
+    "cta": "Agendar conversa com especialista",
+    "items": [
+      {
+        "icon": "design",
+        "title": "Estratégia & Design",
+        "description": "Identidade visual, logo, redes sociais e UX centrado no usuário — produtos viáveis com alto engajamento."
+      },
+      {
+        "icon": "code",
+        "title": "Desenvolvimento de Software",
+        "description": "Sistemas web, SaaS e automações sob medida — squads impulsionadas por IA com mais qualidade em menos tempo."
+      },
+      {
+        "icon": "ai",
+        "title": "Data & AI Solutions",
+        "description": "Agentes de IA, WhatsApp inteligente, CRM e integrações — da concepção à implementação em produção."
+      },
+      {
+        "icon": "cloud",
+        "title": "Arquitetura e Cloud",
+        "description": "VPS, monitoramento, Zabbix, APIs e infraestrutura — sistemas de missão crítica sempre disponíveis."
+      }
+    ]
+  },
+  "innovation": {
+    "label": "Como impulsionamos sua inovação",
+    "title": "Da dor do cliente à ferramenta certa",
+    "blocks": [
+      {
+        "title": "Aceleramos sua jornada de adoção de IA",
+        "bullets": [
+          "Mapeamos oportunidades e definimos roadmap de implementação",
+          "Piloto assistido com escopo fechado e métricas claras",
+          "Integração WhatsApp, CRM e automações com governança"
+        ]
+      },
+      {
+        "title": "Criamos produtos digitais AI-Powered",
+        "bullets": [
+          "LIA CRM e soluções D2 Labs com IA aplicada ao negócio",
+          "Painéis premium, leads, agenda e handoff humano",
+          "Complemento ao ecossistema que você já usa — não substituição caótica"
+        ]
+      },
+      {
+        "title": "Desenvolvemos com processo acelerado",
+        "bullets": [
+          "Templates e arquitetura reutilizável para entrega rápida",
+          "Homologação, documentação e deploy governado",
+          "Reuniões de alinhamento e transparência em cada sprint"
+        ]
+      }
+    ]
+  },
+  "trust": {
+    "label": "Ecossistema",
+    "title": "Marcas e produtos com chancela FatorQ",
+    "subtitle": "Deslize para conhecer — cada solução com identidade própria e padrão de excelência compartilhado.",
+    "brands": ["LIA CRM", "D2 Labs", "FIELD VALID", "FatorQ Sites", "FatorQ Infra"]
+  },
+  "cases": {
+    "label": "Casos e produtos",
+    "title": "Como entregamos valor na prática",
+    "items": [
+      {
+        "metric": "SaaS em produção",
+        "title": "LIA CRM — recepção inteligente odonto",
+        "description": "CRM multi-tenant com WhatsApp, agenda, leads e IA. Stack Node.js, React, PostgreSQL, deploy híbrido Vercel + VPS — complemento Clinicorp.",
+        "tags": ["Saúde", "WhatsApp", "IA"]
+      },
+      {
+        "metric": "Entrega em dias",
+        "title": "Sites institucionais premium",
+        "description": "Template Next.js + JSON editável para clínicas e negócios locais. Design corporativo, deploy Vercel, documentação de adaptação em 15 minutos.",
+        "tags": ["Web", "Odonto", "Template"]
+      },
+      {
+        "metric": "NOC inteligente",
+        "title": "FIELD VALID — alerta → plantonista",
+        "description": "Automação Zabbix com escalonamento para técnico de plantão. Métricas TME/TMA, fila e integração Telegram — validado em ambiente operacional.",
+        "tags": ["Infra", "Zabbix", "Automação"]
+      }
+    ]
+  },
+  "stats": {
+    "label": "FatorQ em números",
+    "title": "Transparência desde o primeiro projeto",
+    "items": [
+      { "value": "5+", "label": "Produtos no ecossistema" },
+      { "value": "1", "label": "SaaS em produção (LIA CRM)" },
+      { "value": "100%", "label": "Entregas documentadas" },
+      { "value": "24/7", "label": "Capacidade operacional NOC" }
+    ]
+  },
+  "useCases": {
+    "label": "Casos de uso",
+    "title": "Principais soluções que desenvolvemos",
+    "items": [
+      { "title": "Agentes de IA", "description": "WhatsApp, CRM e automações com LLM aplicado ao fluxo real do negócio." },
+      { "title": "Sites & Landing", "description": "Presença digital premium para PMEs, liberais e clínicas — entrega rápida." },
+      { "title": "Software customizado", "description": "Sistemas sob medida para digitalizar processos manuais e planilhas." },
+      { "title": "Plataforma & SaaS", "description": "Produtos recorrentes escaláveis com multi-tenant e billing." },
+      { "title": "Identidade visual", "description": "Logo, marca, redes sociais e materiais comerciais alinhados." },
+      { "title": "Monitoramento & NOC", "description": "Zabbix, alertas, plantão automatizado e infraestrutura cloud." },
+      { "title": "Integrações & APIs", "description": "Clinicorp, Google Calendar, webhooks e ecossistema conectado." },
+      { "title": "Consultoria digital", "description": "Diagnóstico no Meet, roadmap e proposta clara antes de codificar." }
+    ]
+  },
+  "mission": {
+    "title": "Missão, visão e valores",
+    "mission": "Entregar soluções digitais de alto nível — design, software e infraestrutura — que transformam a operação de negócios em saúde, indústria e serviços.",
+    "vision": "Ser referência nacional em ecossistema tech: holding reconhecida por design premium, backend robusto e produtos SaaS que geram resultado mensurável.",
+    "values": [
+      { "title": "Entrega real", "description": "Sistemas em produção, não promessas em slide." },
+      { "title": "Design com propósito", "description": "Confiança corporativa do logo ao painel." },
+      { "title": "Parceria consultiva", "description": "Entendemos a dor antes de codificar." },
+      { "title": "Ecossistema integrado", "description": "LIA, D2 Labs e custom com chancela FatorQ." }
+    ]
+  },
+  "portfolio": {
+    "title": "Ecossistema FatorQ",
+    "subtitle": "Produtos homologados e pipeline — cada um com documentação e padrão de release.",
+    "products": [
+      {
+        "name": "LIA CRM",
+        "brand": "MGO System",
+        "status": "production",
+        "category": "SaaS · Saúde",
+        "description": "CRM inteligente para clínicas odontológicas. WhatsApp, agenda, leads e IA.",
+        "url": "https://lia-2.vercel.app/login",
+        "tags": ["WhatsApp", "Odontologia", "SaaS", "IA"]
+      },
+      {
+        "name": "D2 Labs",
+        "brand": "D2 Labs",
+        "status": "production",
+        "category": "Sistemas · Custom",
+        "description": "Jurídico, clínicas e automações sob medida.",
+        "url": null,
+        "tags": ["Sistemas", "Custom", "Backend"]
+      },
+      {
+        "name": "FIELD VALID",
+        "brand": "FatorQ Infra",
+        "status": "development",
+        "category": "Infra · Monitoramento",
+        "description": "Zabbix → plantonista de campo automatizado.",
+        "url": null,
+        "tags": ["Zabbix", "NOC", "Automação"]
+      },
+      {
+        "name": "FatorQ Sites",
+        "brand": "FatorQ Agency",
+        "status": "production",
+        "category": "Web · Templates",
+        "description": "Sites premium com template alterável.",
+        "url": null,
+        "tags": ["Sites", "Landing", "Odonto"]
+      }
+    ]
+  },
+  "industries": {
+    "title": "Segmentos que atendemos",
+    "items": [
+      { "name": "Saúde", "description": "Clínicas e consultórios — LIA CRM e sistemas de gestão." },
+      { "name": "Negócios & Serviços", "description": "PMEs e liberais — sites, identidade e automação." },
+      { "name": "Indústria & Infra", "description": "Monitoramento, rede e cloud 24/7." }
+    ]
+  },
+  "seal": {
+    "title": "Chancela FatorQ",
+    "description": "Todo produto homologado carrega o selo FatorQ Ecosystem — design premium, backend documentado e suporte consultivo."
+  },
+  "finalCta": {
+    "title": "Entre em contato e transforme seu negócio",
+    "subtitle": "Agende uma reunião com nossos especialistas. Diagnóstico consultivo, proposta clara e caminho de execução."
+  },
+  "brandMarquee": {
+    "title": "Ecossistema FatorQ em produção",
+    "items": [
+      "LIA CRM",
+      "D2 Labs",
+      "FIELD VALID",
+      "FatorQ Sites",
+      "FatorQ Infra",
+      "FatorQ Creative",
+      "Chancela FatorQ",
+      "Sites Odonto",
+      "Automação IA",
+      "Monitoramento NOC"
+    ]
+  },
+  "templatesCatalog": {
+    "label": "Sites prontos",
+    "title": "Escolha seu modelo. Nós personalizamos e entregamos.",
+    "subtitle": "Templates homologados FatorQ — preço fechado, entrega rápida. Clique para ver a demonstração e pedir orçamento.",
+    "categories": [
+      { "id": "all", "label": "Todos" },
+      { "id": "odonto", "label": "Odontologia" },
+      { "id": "geral", "label": "Negócios" },
+      { "id": "landing", "label": "Landing" }
+    ],
+    "items": [
+      {
+        "id": "site-base-odonto-v1",
+        "name": "Clínica Odonto Pro",
+        "category": "odonto",
+        "emoji": "🦷",
+        "priceCents": 79700,
+        "deliveryDays": 5,
+        "pitch": "Site profissional para clínicas odontológicas — WhatsApp, serviços, equipe e contato.",
+        "preview": "/templates/previews/site-base-odonto-v1.png",
+        "demoTabs": [
+          { "label": "Home", "image": "/templates/previews/site-base-odonto-v1-home.png" },
+          { "label": "Serviços", "image": "/templates/previews/site-base-odonto-v1-services.png" },
+          { "label": "Contato", "image": "/templates/previews/site-base-odonto-v1-contact.png" }
+        ],
+        "includes": ["Até 5 seções", "WhatsApp flutuante", "SEO básico", "Mobile first", "Deploy Vercel"],
+        "demoUrl": null
+      },
+      {
+        "id": "landing-page-v1",
+        "name": "Landing de Conversão",
+        "category": "landing",
+        "emoji": "🚀",
+        "priceCents": 49700,
+        "deliveryDays": 3,
+        "pitch": "Uma página objetiva para campanhas, lançamentos e captura de leads.",
+        "preview": "/templates/previews/landing-page-v1.png",
+        "demoTabs": [
+          { "label": "Preview", "image": "/templates/previews/landing-page-v1.png" }
+        ],
+        "includes": ["Hero + CTA", "Formulário ou WhatsApp", "Prova social", "Deploy incluído"],
+        "demoUrl": null
+      },
+      {
+        "id": "site-institucional-v1",
+        "name": "Site Institucional",
+        "category": "geral",
+        "emoji": "🏢",
+        "priceCents": 99700,
+        "deliveryDays": 7,
+        "pitch": "Presença digital completa: home, serviços, sobre e contato — credibilidade corporativa.",
+        "preview": "/templates/previews/site-institucional-v1.png",
+        "demoTabs": [
+          { "label": "Home", "image": "/templates/previews/site-institucional-v1-home.png" },
+          { "label": "Serviços", "image": "/templates/previews/site-institucional-v1-services.png" }
+        ],
+        "includes": ["Multi-páginas", "Identidade alinhada", "SEO básico", "Google Maps", "Deploy Vercel"],
+        "demoUrl": null
+      }
+    ]
+  }
+}
