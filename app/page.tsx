@@ -1,41 +1,43 @@
-import { Navbar } from '@/components/navbar';
-import { Hero } from '@/components/hero';
-import { BrandMarquee } from '@/components/brand-marquee';
-import { ApproachSection } from '@/components/approach-section';
-import { ServicesSection } from '@/components/services-section';
-import { InnovationSection } from '@/components/innovation-section';
-import { InteractiveDemoSection } from '@/components/interactive-demo-section';
-import { TemplatesGallerySection } from '@/components/templates-gallery-section';
-import { CasesSection } from '@/components/cases-section';
-import { StatsSection } from '@/components/stats-section';
-import { UseCasesSection } from '@/components/use-cases-section';
-import { PortfolioSection } from '@/components/portfolio-section';
-import { MissionSection } from '@/components/mission-section';
-import { ContactSection } from '@/components/contact-section';
-import { StickyCta } from '@/components/sticky-cta';
-import { Footer } from '@/components/footer';
+import { V2Navbar } from '@/components/v2/navbar';
+import { V2Hero } from '@/components/v2/hero';
+import { V2BrandMarquee } from '@/components/v2/brand-marquee';
+import { V2Approach } from '@/components/v2/approach';
+import { V2Services } from '@/components/v2/services';
+import { V2DemoSection } from '@/components/v2/demo-section';
+import { V2SitesShowcase } from '@/components/v2/sites-showcase';
+import { V2CrmShowcase } from '@/components/v2/crm-showcase';
+import { V2Innovation } from '@/components/v2/innovation';
+import { V2Stats } from '@/components/v2/stats';
+import { V2Ecosystem } from '@/components/v2/ecosystem';
+import { V2HumanProof } from '@/components/v2/human-proof';
+import { V2Medal } from '@/components/v2/medal';
+import { V2Timeline } from '@/components/v2/timeline';
+import { V2TechCloud } from '@/components/v2/tech-cloud';
+import { V2Cta } from '@/components/v2/cta';
+import { V2Footer } from '@/components/v2/footer';
 
 export default function HomePage() {
   return (
     <>
-      <Navbar />
-      <main className="pb-28">
-        <Hero />
-        <BrandMarquee />
-        <ApproachSection />
-        <ServicesSection />
-        <InteractiveDemoSection />
-        <TemplatesGallerySection />
-        <InnovationSection />
-        <CasesSection />
-        <StatsSection />
-        <UseCasesSection />
-        <PortfolioSection />
-        <MissionSection />
-        <ContactSection />
+      <V2Navbar />
+      <main>
+        <V2Hero />
+        <V2BrandMarquee />
+        <V2Approach />
+        <V2Services />
+        <V2DemoSection />
+        <V2SitesShowcase />
+        <V2CrmShowcase />
+        <V2Innovation />
+        <V2Stats />
+        <V2Ecosystem />
+        <V2HumanProof />
+        <V2Medal />
+        <V2Timeline />
+        <V2TechCloud />
+        <V2Cta />
       </main>
-      <StickyCta />
-      <Footer />
+      <V2Footer />
     </>
   );
 }

@@ -1,19 +1,21 @@
 import type { Metadata } from 'next';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import { siteConfig } from '@/lib/site-config';
+import { CursorGlow } from '@/components/ui/cursor-glow';
 import './globals.css';
 
 const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-inter',
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const space = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-display',
+  variable: '--font-space',
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://fatorq.vercel.app'),
   title: siteConfig.seo.title,
   description: siteConfig.seo.description,
   icons: {
@@ -30,8 +32,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${jakarta.variable}`}>
+    <html lang="pt-BR" className={`${inter.variable} ${space.variable}`}>
       <body className="font-sans antialiased selection:bg-cyan-500/30" suppressHydrationWarning>
+        <CursorGlow />
         {children}
       </body>
     </html>

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fatorq.com.br/schemas/fluxo-rapido-site.schema.json",
+  "title": "FatorQ Fluxo Rapido Site Briefing",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "rawClientScript",
+    "companyName",
+    "siteType",
+    "segment",
+    "objective",
+    "audience",
+    "painPoint",
+    "offer",
+    "primaryCta",
+    "tone",
+    "visualReferences",
+    "requiredSections",
+    "materials",
+    "ecosystemLinks"
+  ],
+  "properties": {
+    "rawClientScript": {
+      "type": "string",
+      "description": "Texto bruto do cliente, transcrição de áudio, reunião ou conversa de WhatsApp."
+    },
+    "companyName": {
+      "type": "string",
+      "description": "Nome da empresa, marca, profissional ou produto."
+    },
+    "siteType": {
+      "type": "string",
+      "enum": ["landing", "institutional", "multi-page", "catalog"]
+    },
+    "segment": {
+      "type": "string"
+    },
+    "objective": {
+      "type": "string"
+    },
+    "audience": {
+      "type": "string"
+    },
+    "painPoint": {
+      "type": "string"
+    },
+    "offer": {
+      "type": "string"
+    },
+    "primaryCta": {
+      "type": "string"
+    },
+    "tone": {
+      "type": "string"
+    },
+    "visualReferences": {
+      "type": "string"
+    },
+    "requiredSections": {
+      "type": "string"
+    },
+    "differentials": {
+      "type": "string"
+    },
+    "socialProof": {
+      "type": "string"
+    },
+    "brandAssets": {
+      "type": "string"
+    },
+    "materials": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "competitors": {
+      "type": "string"
+    },
+    "restrictions": {
+      "type": "string"
+    },
+    "deadline": {
+      "type": "string"
+    },
+    "ecosystemLinks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["FatorQ Sites", "LIA CRM", "D2 Labs", "FatorQ Infra"]
+      },
+      "uniqueItems": true
+    }
+  }
+}

@@ -1,11 +1,10 @@
 import Link from 'next/link';
-import { Navbar } from '@/components/navbar';
-import { BrandMarquee } from '@/components/brand-marquee';
-import { InteractiveDemoSection } from '@/components/interactive-demo-section';
+import { V2Navbar } from '@/components/v2/navbar';
+import { V2BrandMarquee } from '@/components/v2/brand-marquee';
+import { V2DemoSection } from '@/components/v2/demo-section';
 import { TemplatesGallerySection } from '@/components/templates-gallery-section';
-import { ContactSection } from '@/components/contact-section';
-import { Footer } from '@/components/footer';
-import { StickyCta } from '@/components/sticky-cta';
+import { V2Cta } from '@/components/v2/cta';
+import { V2Footer } from '@/components/v2/footer';
 
 export const metadata = {
   title: 'Sites Prontos | FatorQ',
@@ -15,11 +14,11 @@ export const metadata = {
 export default function SitesPage() {
   return (
     <>
-      <Navbar />
-      <main className="pb-28 pt-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center pt-16 pb-8">
-          <p className="section-label mb-4">FatorQ Agency</p>
-          <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-white mb-4">
+      <V2Navbar />
+      <main className="pt-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center pt-24 pb-8">
+          <p className="text-xs font-mono tracking-[0.2em] uppercase text-cyan-400 mb-4">FatorQ Agency</p>
+          <h1 className="font-[family-name:var(--font-space)] text-4xl sm:text-5xl font-bold text-white mb-4">
             Sites prontos para o seu negócio
           </h1>
           <p className="text-slate-400 text-lg">
@@ -30,13 +29,12 @@ export default function SitesPage() {
           </Link>
         </div>
 
-        <BrandMarquee />
-        <InteractiveDemoSection />
+        <V2BrandMarquee />
+        <V2DemoSection />
         <TemplatesGallerySection compact />
       </main>
-      <ContactSection />
-      <StickyCta />
-      <Footer />
+      <V2Cta />
+      <V2Footer />
     </>
   );
 }

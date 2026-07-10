@@ -5,4 +5,6 @@ node_modules
 *.tsbuildinfo
 .vercel
 
-.vercel
+.codex-dev-stderr.log
+.codex-dev-stdout.log
+FATORQ-main/
