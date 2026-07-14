@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { type MotionValue } from 'motion/react';
+import { QuantumBlueprintBackdrop } from '@/components/v2/quantum-hero/quantum-blueprint-backdrop';
 import { QuantumCanvas } from '@/components/v2/quantum-hero/quantum-canvas';
-import { QuantumImpactBackdrop } from '@/components/v2/quantum-hero/quantum-impact-backdrop';
 
 export type QuantumHeroProps = {
   scrollProgress: MotionValue<number>;
@@ -12,6 +12,7 @@ export type QuantumHeroProps = {
 
 export function QuantumHero({ scrollProgress, onReady }: QuantumHeroProps) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const intersectingRef = useRef(true);
   const [active, setActive] = useState(true);
   const [fieldActive, setFieldActive] = useState(false);
 
@@ -19,9 +20,19 @@ export function QuantumHero({ scrollProgress, onReady }: QuantumHeroProps) {
     const root = rootRef.current;
     if (!root) return;
 
-    const observer = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), { threshold: 0.01 });
+    const updateActivity = () => setActive(intersectingRef.current && document.visibilityState === 'visible');
+    const observer = new IntersectionObserver(([entry]) => {
+      intersectingRef.current = entry.isIntersecting;
+      updateActivity();
+    }, { threshold: 0.01 });
+    const onVisibilityChange = () => updateActivity();
+
     observer.observe(root);
-    return () => observer.disconnect();
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -31,11 +42,11 @@ export function QuantumHero({ scrollProgress, onReady }: QuantumHeroProps) {
   }, []);
 
   return (
-    <div ref={rootRef} className="relative h-full min-h-[820px] w-full overflow-hidden bg-[#020507] lg:min-h-[860px] xl:min-h-screen">
+    <div ref={rootRef} className="relative h-full min-h-0 w-full overflow-hidden bg-[#020507]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_47%,rgba(34,211,238,0.22),rgba(8,145,178,0.07)_28%,transparent_61%)]" />
       <div className="pointer-events-none absolute left-[var(--quantum-core-x,70%)] top-[var(--quantum-core-y,50%)] h-[58%] w-[45%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-200/[0.045] blur-[105px]" />
 
-      {fieldActive && <QuantumImpactBackdrop />}
+      {fieldActive && <QuantumBlueprintBackdrop scrollProgress={scrollProgress} />}
 
       <div className="pointer-events-none absolute inset-0 z-[2]">
         <QuantumCanvas scrollProgress={scrollProgress} active={active} onReady={onReady} />

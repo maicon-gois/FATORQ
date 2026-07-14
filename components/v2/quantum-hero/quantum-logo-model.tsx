@@ -62,9 +62,10 @@ export function QuantumLogoModel({ experience }: QuantumLogoModelProps) {
     return clone;
   }, [scene]);
 
-  useFrame((state, delta) => {
+  useFrame((state, rawDelta) => {
     const group = groupRef.current;
     if (!group) return;
+    const delta = Math.min(rawDelta, 1 / 30);
 
     const interaction = experience.current;
     const rotation = interaction.logoRotation;
@@ -91,10 +92,10 @@ export function QuantumLogoModel({ experience }: QuantumLogoModelProps) {
     const ejection = interaction.brand;
     const logoReveal = THREE.MathUtils.smoothstep(ejection, 0.01, 0.72);
     const overshoot = logoReveal + Math.sin(logoReveal * Math.PI) * 0.12;
-    const fieldScale = 1 + THREE.MathUtils.smoothstep(interaction.cinematic, 0.12, 0.88) * 0.12;
+    const logoExit = 1 - THREE.MathUtils.smoothstep(interaction.cinematic, 0.06, 0.48);
 
-    group.scale.setScalar(Math.max(overshoot * fieldScale, 0.001));
-    group.position.z = THREE.MathUtils.lerp(0.16, 0.38, ejection) + Math.sin(ejection * Math.PI) * 0.14 + interaction.cinematic * 0.04;
+    group.scale.setScalar(Math.max(overshoot * logoExit, 0.001));
+    group.position.z = THREE.MathUtils.lerp(0.16, 0.38, ejection) + Math.sin(ejection * Math.PI) * 0.14 + interaction.cinematic * 0.22;
     group.rotation.x = rotation.x;
     group.rotation.y = rotation.y;
   });

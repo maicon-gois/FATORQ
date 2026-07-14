@@ -40,7 +40,7 @@ export function QuantumSymbolField({ experience }: QuantumSymbolFieldProps) {
   const { viewport } = useThree();
   const groupRef = useRef<THREE.Group>(null);
   const materialsRef = useRef<Array<THREE.SpriteMaterial | null>>([]);
-  const modelX = Math.min(Math.max(viewport.width * 0.2, 1.02), 1.5);
+  const modelX = viewport.width * 0.2;
   const symbols = useMemo(() => SYMBOLS.map((label, index) => {
     const angle = index * 2.399963;
     const radius = 1.15 + (index % 4) * 0.62;

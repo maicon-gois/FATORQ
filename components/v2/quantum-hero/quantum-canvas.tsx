@@ -19,10 +19,11 @@ type QuantumCanvasProps = {
 };
 
 function QuantumCameraRig({ scrollProgress, experience }: Pick<QuantumCanvasProps, 'scrollProgress'> & { experience: QuantumExperienceRef }) {
-  useFrame((state, delta) => {
+  useFrame((state, rawDelta) => {
     const progress = scrollProgress.get();
     const cinematic = experience.current.cinematic;
     const camera = state.camera;
+    const delta = Math.min(rawDelta, 1 / 30);
 
     camera.position.x = THREE.MathUtils.damp(camera.position.x, cinematic * 0.05, 7, delta);
     camera.position.z = THREE.MathUtils.damp(camera.position.z, 6.55 - progress * 0.42 - cinematic * 0.16, 7, delta);
@@ -68,7 +69,7 @@ export function QuantumCanvas({ scrollProgress, active, onReady }: QuantumCanvas
       <QuantumReflections />
       <QuantumLights experience={experience} />
       <QuantumEnergyMembrane experience={experience} />
-      <QuantumCinematicField experience={experience} />
+      <QuantumCinematicField experience={experience} scrollProgress={scrollProgress} />
       <QuantumEnvironment experience={experience} />
       <QuantumModel experience={experience} />
     </Canvas>

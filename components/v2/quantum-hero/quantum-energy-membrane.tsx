@@ -69,7 +69,7 @@ export function QuantumEnergyMembrane({ experience }: QuantumEnergyMembraneProps
   const { viewport } = useThree();
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const modelX = Math.min(Math.max(viewport.width * 0.2, 1.02), 1.5);
+  const modelX = viewport.width * 0.2;
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
     uEnergy: { value: 0 },
@@ -78,10 +78,11 @@ export function QuantumEnergyMembrane({ experience }: QuantumEnergyMembraneProps
     uColor: { value: new THREE.Color('#43dff5') },
   }), []);
 
-  useFrame((state, delta) => {
+  useFrame((state, rawDelta) => {
     const group = groupRef.current;
     const material = materialRef.current;
     if (!group || !material) return;
+    const delta = Math.min(rawDelta, 1 / 30);
 
     const interaction = experience.current;
     const proximityEnergy = interaction.proximity * 0.72;

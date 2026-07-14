@@ -4,19 +4,22 @@
 
 import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
+import type { MotionValue } from 'motion/react';
 import * as THREE from 'three';
 import type { QuantumExperienceRef } from '@/components/v2/quantum-hero/quantum-interaction';
 
 type QuantumCinematicFieldProps = {
   experience: QuantumExperienceRef;
+  scrollProgress: MotionValue<number>;
 };
 
-export function QuantumCinematicField({ experience }: QuantumCinematicFieldProps) {
+export function QuantumCinematicField({ experience, scrollProgress }: QuantumCinematicFieldProps) {
   const { viewport } = useThree();
   const groupRef = useRef<THREE.Group>(null);
   const geometryRef = useRef<THREE.BufferGeometry>(null);
   const materialRef = useRef<THREE.PointsMaterial>(null);
-  const modelX = Math.min(Math.max(viewport.width * 0.2, 1.02), 1.5);
+  const simulationTime = useRef(0);
+  const modelX = viewport.width * 0.2;
   const positions = useMemo(() => {
     const points = new Float32Array(420 * 3);
 
@@ -38,20 +41,25 @@ export function QuantumCinematicField({ experience }: QuantumCinematicFieldProps
     for (let index = 0; index < 420; index += 1) values[index] = 0.22 + ((index * 37) % 91) / 190;
     return values;
   }, []);
-  useFrame((state, delta) => {
+  useFrame((_, rawDelta) => {
     const group = groupRef.current;
     const geometry = geometryRef.current;
     const material = materialRef.current;
     if (!group || !geometry || !material) return;
 
+    const delta = Math.min(rawDelta, 1 / 30);
+    simulationTime.current += delta;
+    const time = simulationTime.current;
     const progress = experience.current.cinematic;
+    const scroll = scrollProgress.get();
+    const scrollFade = 1 - THREE.MathUtils.smoothstep(scroll, 0.64, 0.96);
     group.visible = progress > 0.015;
     group.rotation.z += delta * (0.035 + progress * 0.075);
     group.position.x = THREE.MathUtils.lerp(modelX, 0, THREE.MathUtils.smoothstep(progress, 0.28, 0.82));
-    group.position.y = Math.sin(state.clock.elapsedTime * 0.31) * progress * 0.08;
-    group.position.z = -0.12 + Math.sin(state.clock.elapsedTime * 0.42) * progress * 0.08;
+    group.position.y = Math.sin(time * 0.31) * progress * 0.08 - scroll * viewport.height * 0.12;
+    group.position.z = -0.12 + Math.sin(time * 0.42) * progress * 0.08;
     group.scale.set(0.72 + progress * 1.75, 0.72 + progress * 1.18, 1);
-    material.opacity = THREE.MathUtils.smoothstep(progress, 0.08, 0.48) * (0.5 + Math.sin(state.clock.elapsedTime * 1.4) * 0.06);
+    material.opacity = THREE.MathUtils.smoothstep(progress, 0.08, 0.48) * (0.5 + Math.sin(time * 1.4) * 0.06) * scrollFade;
     material.size = 0.011 + progress * 0.019;
 
     if (progress > 0.08) {

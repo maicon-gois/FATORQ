@@ -14,18 +14,19 @@ export function QuantumEnvironment({ experience }: QuantumEnvironmentProps) {
   const { viewport } = useThree();
   const outerRef = useRef<THREE.Group>(null);
   const innerRef = useRef<THREE.Group>(null);
-  const modelX = Math.min(Math.max(viewport.width * 0.2, 1.02), 1.5);
+  const modelX = viewport.width * 0.2;
 
-  useFrame((_, delta) => {
+  useFrame((_, rawDelta) => {
     const outer = outerRef.current;
     const inner = innerRef.current;
     if (!outer || !inner) return;
+    const delta = Math.min(rawDelta, 1 / 30);
 
     const interaction = experience.current;
     const reveal = interaction.reveal;
     const cinematic = interaction.cinematic;
     const proximity = interaction.proximity;
-    const speed = 0.62 + proximity * 4.8 + reveal * 0.46 + cinematic * 2.2;
+    const speed = 1.08 + proximity * 5.1 + reveal * 0.52 + cinematic * 2.4;
 
     outer.rotation.z += delta * speed;
     outer.rotation.y += delta * (0.12 + proximity * 0.62 + cinematic * 0.48);

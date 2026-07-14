@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { type MotionValue } from 'motion/react';
 import { Hero3DQLazy } from '@/components/v2/hero-3d-q-lazy';
 import { QuantumHeroLazy } from '@/components/v2/quantum-hero/quantum-hero-lazy';
@@ -9,9 +9,23 @@ import { QuantumInstantFallback } from '@/components/v2/quantum-hero/quantum-ins
 import { QuantumMobileFallback } from '@/components/v2/quantum-hero/quantum-mobile-fallback';
 import { siteConfig } from '@/lib/site-config';
 
+type HeroRenderMode = 'pending' | 'static' | 'interactive';
+
+const subscribeToInitialCapabilities = () => () => undefined;
+let initialRenderModeSnapshot: HeroRenderMode | undefined;
+const getRenderModeSnapshot = (): HeroRenderMode => {
+  if (initialRenderModeSnapshot) return initialRenderModeSnapshot;
+  if (typeof window === 'undefined') return 'pending';
+  const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  initialRenderModeSnapshot = coarsePointer || reducedMotion ? 'static' : 'interactive';
+  return initialRenderModeSnapshot;
+};
+const getRenderModeServerSnapshot = (): HeroRenderMode => 'pending';
+
 function Hero3DPlaceholder() {
   return (
-    <div className="relative h-full min-h-[860px] w-full overflow-hidden bg-[#030609] lg:min-h-[900px] xl:min-h-screen">
+    <div className="relative h-full min-h-0 w-full overflow-hidden bg-[#030609]">
       <QuantumInstantFallback />
     </div>
   );
@@ -19,7 +33,7 @@ function Hero3DPlaceholder() {
 
 function Hero3DStaticScene() {
   return (
-    <div className="relative h-full min-h-[860px] w-full overflow-hidden bg-[#030609]">
+    <div className="relative h-full min-h-0 w-full overflow-hidden bg-[#030609]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_36%,rgba(6,182,212,0.2),transparent_38%)]" />
       <div className="absolute inset-x-[-35%] bottom-[-10%] h-[45%] -rotate-6 bg-[linear-gradient(rgba(56,189,248,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(56,189,248,0.08)_1px,transparent_1px)] bg-[size:38px_38px] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
       <div className="absolute right-[-38%] top-[18%] h-[62vw] w-[62vw] min-h-[430px] min-w-[430px] rounded-full border border-cyan-200/10" />
@@ -39,7 +53,7 @@ function Hero3DStaticScene() {
 
 function SplineEmbed({ sceneUrl }: { sceneUrl: string }) {
   return (
-    <div className="relative h-full min-h-[860px] w-full overflow-hidden bg-[#030609] lg:min-h-[900px] xl:min-h-screen">
+    <div className="relative h-full min-h-0 w-full overflow-hidden bg-[#030609]">
       <iframe
         title="FatorQ 3D scene"
         src={sceneUrl}
@@ -58,29 +72,13 @@ type Hero3DStageProps = {
 
 export function Hero3DStage({ scrollProgress, onReady }: Hero3DStageProps) {
   const { hero3d } = siteConfig;
-  const [renderMode, setRenderMode] = useState<'pending' | 'static' | 'interactive'>('pending');
+  const renderMode = useSyncExternalStore(subscribeToInitialCapabilities, getRenderModeSnapshot, getRenderModeServerSnapshot);
   const [webglReady, setWebglReady] = useState(false);
 
   const markWebglReady = useCallback(() => {
     setWebglReady(true);
     onReady();
   }, [onReady]);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
-    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    const update = () => setRenderMode(mediaQuery.matches || motionQuery.matches ? 'static' : 'interactive');
-
-    update();
-    mediaQuery.addEventListener('change', update);
-    motionQuery.addEventListener('change', update);
-
-    return () => {
-      mediaQuery.removeEventListener('change', update);
-      motionQuery.removeEventListener('change', update);
-    };
-  }, []);
 
   useEffect(() => {
     if (renderMode === 'static') onReady();
@@ -102,7 +100,7 @@ export function Hero3DStage({ scrollProgress, onReady }: Hero3DStageProps) {
     return (
       <div
         data-quantum-stage
-        className="relative h-full min-h-[860px] w-full overflow-hidden bg-[#030609] [--quantum-core-x:70%] [--quantum-core-y:50%] lg:min-h-[900px] xl:min-h-screen"
+        className="relative h-full min-h-0 w-full overflow-hidden bg-[#030609] [--quantum-core-x:70%] [--quantum-core-y:50%]"
       >
         <QuantumHeroLazy scrollProgress={scrollProgress} onReady={markWebglReady} />
         <QuantumInstantFallback hidden={webglReady} />

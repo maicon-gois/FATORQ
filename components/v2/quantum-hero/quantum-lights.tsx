@@ -13,10 +13,11 @@ export function QuantumLights({ experience }: QuantumLightsProps) {
   const keyLightRef = useRef<THREE.PointLight>(null);
   const rimLightRef = useRef<THREE.PointLight>(null);
 
-  useFrame((_, delta) => {
+  useFrame((_, rawDelta) => {
     const key = keyLightRef.current;
     const rim = rimLightRef.current;
     if (!key || !rim) return;
+    const delta = Math.min(rawDelta, 1 / 30);
 
     const interaction = experience.current;
     const chargeBoost = interaction.charge * 24 + interaction.cinematic * 12;

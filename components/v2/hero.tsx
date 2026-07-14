@@ -1,12 +1,22 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { Hero3DStage } from '@/components/v2/hero-3d-stage';
 import { siteConfig, whatsappUrl } from '@/lib/site-config';
 
 const wordEase = [0.22, 1, 0.36, 1] as const;
+const subscribeToInitialCapabilities = () => () => undefined;
+let initialInteractiveNarrativeSnapshot: boolean | undefined;
+const getInteractiveNarrativeSnapshot = () => {
+  if (initialInteractiveNarrativeSnapshot !== undefined) return initialInteractiveNarrativeSnapshot;
+  if (typeof window === 'undefined') return false;
+  initialInteractiveNarrativeSnapshot = !window.matchMedia('(pointer: coarse)').matches
+    && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return initialInteractiveNarrativeSnapshot;
+};
+const getInteractiveNarrativeServerSnapshot = () => false;
 
 type AnimatedLineProps = {
   children: string;
@@ -35,7 +45,11 @@ export function V2Hero() {
   const [visualReady, setVisualReady] = useState(false);
   const [activated, setActivated] = useState(false);
   const [corePhase, setCorePhase] = useState<'ambient' | 'reveal' | 'brand' | 'cinematic'>('ambient');
-  const [interactiveNarrative, setInteractiveNarrative] = useState(false);
+  const interactiveNarrative = useSyncExternalStore(
+    subscribeToInitialCapabilities,
+    getInteractiveNarrativeSnapshot,
+    getInteractiveNarrativeServerSnapshot,
+  );
   const copyTargetX = useMotionValue(0);
   const copyTargetY = useMotionValue(0);
   const copyParallaxX = useSpring(copyTargetX, { stiffness: 95, damping: 24, mass: 0.45 });
@@ -75,25 +89,15 @@ export function V2Hero() {
     };
   }, [copyTargetX, copyTargetY]);
 
-  useEffect(() => {
-    const desktop = window.matchMedia('(min-width: 768px)');
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setInteractiveNarrative(desktop.matches && !reducedMotion.matches);
-
-    update();
-    desktop.addEventListener('change', update);
-    reducedMotion.addEventListener('change', update);
-    return () => {
-      desktop.removeEventListener('change', update);
-      reducedMotion.removeEventListener('change', update);
-    };
-  }, []);
-
   const copyReady = visualReady && (!interactiveNarrative || corePhase === 'brand');
 
   return (
-    <section ref={sectionRef} id="inicio" className="relative min-h-[820px] bg-[#020507] md:h-[220vh] md:min-h-0">
-      <div className="relative flex min-h-[820px] items-center overflow-hidden bg-[#020507] pt-16 md:sticky md:top-0 md:h-screen md:min-h-[720px]">
+    <section
+      ref={sectionRef}
+      id="inicio"
+      className={`relative bg-[#020507] ${interactiveNarrative ? 'h-[220svh] min-h-[1320px]' : 'min-h-[820px]'}`}
+    >
+      <div className={`relative flex items-center overflow-hidden bg-[#020507] pt-16 ${interactiveNarrative ? 'sticky top-0 h-[100svh]' : 'min-h-[820px]'}`}>
         <div className="absolute inset-0 z-0">
           <Hero3DStage scrollProgress={smoothProgress} onReady={handleSceneReady} />
         </div>

@@ -22,7 +22,7 @@ export function QuantumDataHorizon({ experience, scrollProgress }: QuantumDataHo
   const sourceMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
   const streamRef = useRef<THREE.Points>(null);
   const streamMaterialRef = useRef<THREE.PointsMaterial>(null);
-  const modelX = Math.min(Math.max(viewport.width * 0.2, 1.02), 1.5);
+  const modelX = viewport.width * 0.2;
   const streamPositions = useMemo(() => {
     const positions = new Float32Array(120 * 3);
 

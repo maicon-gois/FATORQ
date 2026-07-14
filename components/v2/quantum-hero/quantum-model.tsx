@@ -65,10 +65,10 @@ export function QuantumModel({ experience }: QuantumModelProps) {
   const ignitionPulseRef = useRef<THREE.Mesh>(null);
   const ignitionPulseMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
   const hotspotRectRef = useRef<HotspotBounds | null>(null);
-  const introStart = useRef<number | null>(null);
+  const simulationTime = useRef(0);
   const phaseSent = useRef<QuantumPhase>('ambient');
   const activationTime = useRef<number | null>(null);
-  const modelX = Math.min(Math.max(viewport.width * 0.2, 1.02), 1.5);
+  const modelX = viewport.width * 0.2;
   const magneticArcPositions = useMemo(() => new Float32Array(ARC_POINT_COUNT * 3), []);
   const magneticArcSecondaryPositions = useMemo(() => new Float32Array(ARC_POINT_COUNT * 3), []);
   const magneticArc = useMemo(() => {
@@ -255,15 +255,16 @@ export function QuantumModel({ experience }: QuantumModelProps) {
     };
   }, [experience]);
 
-  useFrame((state, delta) => {
+  useFrame((_, rawDelta) => {
     const root = rootRef.current;
     const coreFollower = coreFollowerRef.current;
     if (!root || !coreFollower) return;
 
     const interaction = experience.current;
-    const clockTime = state.clock.elapsedTime;
-    if (introStart.current === null) introStart.current = clockTime;
-    const time = introStart.current === null ? 0 : clockTime - introStart.current;
+    const delta = Math.min(rawDelta, 1 / 30);
+    simulationTime.current += delta;
+    const clockTime = simulationTime.current;
+    const time = clockTime;
     const intro = THREE.MathUtils.smoothstep(time, 0.02, 0.55);
 
     interaction.proximity = THREE.MathUtils.damp(interaction.proximity, interaction.proximityTarget, 8.5, delta);
@@ -368,7 +369,7 @@ export function QuantumModel({ experience }: QuantumModelProps) {
       shellRef.current.visible = true;
       const shellScale = (0.6 + interaction.brand * 0.4) * (1 + cinematic * 0.08) * (1 - charge * 0.04);
       shellRef.current.scale.setScalar(Math.max(shellScale, 0.001));
-      shellRef.current.rotation.y += delta * (0.12 + Math.abs(localOrbit) * 0.1);
+      shellRef.current.rotation.y += delta * (0.38 + Math.abs(localOrbit) * 0.16);
       shellRef.current.rotation.x = Math.sin(time * 0.42) * 0.08;
     }
 
