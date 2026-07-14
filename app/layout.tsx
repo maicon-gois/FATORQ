@@ -33,6 +33,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className={`${inter.variable} ${space.variable}`}>
+      <head>
+        <link
+          rel="preload"
+          href="/models/logo-3d-model-realtime.glb"
+          as="fetch"
+          type="model/gltf-binary"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="font-sans antialiased selection:bg-cyan-500/30" suppressHydrationWarning>
         <CursorGlow />
         {children}

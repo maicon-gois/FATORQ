@@ -6,6 +6,9 @@
   "additionalProperties": false,
   "required": [
     "rawClientScript",
+    "contactName",
+    "contactEmail",
+    "contactWhatsapp",
     "companyName",
     "siteType",
     "segment",
@@ -24,6 +27,18 @@
     "rawClientScript": {
       "type": "string",
       "description": "Texto bruto do cliente, transcrição de áudio, reunião ou conversa de WhatsApp."
+    },
+    "contactName": {
+      "type": "string",
+      "description": "Nome do responsável ou contato comercial do lead."
+    },
+    "contactEmail": {
+      "type": "string",
+      "description": "E-mail usado para subir o lead no D2."
+    },
+    "contactWhatsapp": {
+      "type": "string",
+      "description": "WhatsApp do lead, preferencialmente com DDI e DDD."
     },
     "companyName": {
       "type": "string",

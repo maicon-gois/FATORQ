@@ -9,8 +9,8 @@ const icons = [Shield, TrendingUp, Users];
 export function V2Approach() {
   const { approach } = siteConfig;
   return (
-    <section id="abordagem" className="py-28 relative bg-[#0a0a0f] overflow-hidden border-y border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="abordagem" className="relative z-10 overflow-hidden border-y border-white/5 bg-transparent py-28">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
           <p className="text-xs font-mono tracking-[0.2em] uppercase text-cyan-400 mb-3">{approach.label}</p>
           <h2 className="font-[family-name:var(--font-space)] text-3xl sm:text-4xl font-bold text-white">{approach.title}</h2>

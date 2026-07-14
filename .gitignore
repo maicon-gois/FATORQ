@@ -7,4 +7,9 @@ node_modules
 
 .codex-dev-stderr.log
 .codex-dev-stdout.log
+.codex-dev-*.log
+.codex-prod-*.log
+.codex-review-*/
+.codex-video-review/
+logo 3d model.glb
 FATORQ-main/

@@ -64,7 +64,7 @@ INPUT DO CLIENTE (variáveis que você recebe)
 }
 
 EXEMPLOS DE clientScript VÁLIDOS (poucas palavras):
-- "clínica odonto em Rio Grande, implantes e clareamento, WhatsApp"
+- "clínica odonto em Florianópolis, implantes e clareamento, WhatsApp"
 - "advogado trabalhista, atendo empresas, quero leads"
 - "energia solar residencial, orçamento grátis, Campinas"
 - "hamburgueria delivery artesanal, pedido pelo Zap"
@@ -355,12 +355,12 @@ EXEMPLO FEW-SHOT (referência interna)
 
 INPUT:
 {
-  "clientScript": "clínica odonto Rio Grande implantes clareamento WhatsApp",
+  "clientScript": "clínica odonto Florianópolis implantes clareamento WhatsApp",
   "license": { "status": "preview", "planId": "site-base-odonto-v1", "priceCents": 79700 }
 }
 
 INFERIDO:
-- companyName: "Clínica Odontológica Rio Grande" (inferido)
+- companyName: "Clínica Odontológica Florianópolis" (inferido)
 - segment: odontologia
 - templateId: site-base-odonto-v1
 - primaryCta: "Agendar avaliação pelo WhatsApp"

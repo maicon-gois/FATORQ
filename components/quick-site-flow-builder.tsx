@@ -5,11 +5,14 @@ import {
   Clipboard,
   ClipboardCheck,
   Download,
+  Loader2,
   FileText,
   RefreshCcw,
+  Send,
   Sparkles,
 } from 'lucide-react';
 import {
+  buildD2LeadPayload,
   buildQuickSiteJson,
   buildQuickSitePrompt,
   defaultQuickSiteBriefing,
@@ -108,6 +111,10 @@ export function QuickSiteFlowBuilder() {
   const [briefing, setBriefing] = useState<QuickSiteBriefing>(defaultQuickSiteBriefing);
   const [mode, setMode] = useState<PromptMode>('complete');
   const [copyState, setCopyState] = useState<'idle' | 'copied'>('idle');
+  const [d2State, setD2State] = useState<{ status: 'idle' | 'sending' | 'success' | 'error'; message: string }>({
+    status: 'idle',
+    message: '',
+  });
   const completion = getQuickSiteCompletion(briefing);
   const prompt = buildQuickSitePrompt(briefing, mode);
 
@@ -146,6 +153,39 @@ export function QuickSiteFlowBuilder() {
     anchor.download = `${filename}-fluxo-rapido.json`;
     anchor.click();
     URL.revokeObjectURL(url);
+  };
+
+  const sendToD2 = async () => {
+    const payload = buildD2LeadPayload(briefing);
+
+    if (!payload.name || !payload.email) {
+      setD2State({
+        status: 'error',
+        message: 'Informe nome do contato ou empresa e e-mail antes de subir para o D2.',
+      });
+      return;
+    }
+
+    setD2State({ status: 'sending', message: 'Enviando lead para o D2...' });
+    try {
+      const response = await fetch('/api/d2/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.error ?? 'Falha ao enviar lead para o D2.');
+      }
+
+      setD2State({ status: 'success', message: 'Lead enviado para Leads & Pedidos no D2.' });
+    } catch (err) {
+      setD2State({
+        status: 'error',
+        message: err instanceof Error ? err.message : 'Falha ao enviar lead para o D2.',
+      });
+    }
   };
 
   const handleFiles = (files: FileList | null) => {
@@ -192,6 +232,26 @@ export function QuickSiteFlowBuilder() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <Field
+              label="Contato do lead"
+              value={briefing.contactName}
+              onChange={(value) => setValue('contactName', value)}
+              placeholder="Ex: Dra. Ana Silva"
+            />
+            <Field
+              label="E-mail do lead"
+              value={briefing.contactEmail}
+              onChange={(value) => setValue('contactEmail', value)}
+              placeholder="Ex: contato@empresa.com.br"
+              type="email"
+            />
+            <Field
+              label="WhatsApp do lead"
+              value={briefing.contactWhatsapp}
+              onChange={(value) => setValue('contactWhatsapp', value)}
+              placeholder="Ex: 5553999999999"
+              type="tel"
+            />
+            <Field
               label="Empresa"
               value={briefing.companyName}
               onChange={(value) => setValue('companyName', value)}
@@ -217,7 +277,7 @@ export function QuickSiteFlowBuilder() {
               label="Público-alvo"
               value={briefing.audience}
               onChange={(value) => setValue('audience', value)}
-              placeholder="Ex: famílias de classe média em Rio Grande"
+              placeholder="Ex: famílias de classe média em Florianópolis"
             />
             <Field
               label="CTA principal"
@@ -390,6 +450,31 @@ export function QuickSiteFlowBuilder() {
             </button>
           </div>
 
+          <button
+            type="button"
+            onClick={() => void sendToD2()}
+            disabled={d2State.status === 'sending'}
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/35 bg-emerald-400/12 px-3 py-3 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-400/18 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {d2State.status === 'sending' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            {d2State.status === 'sending' ? 'Subindo para D2' : 'Subir lead para D2'}
+          </button>
+
+          {d2State.message && (
+            <p
+              className={cn(
+                'mt-2 rounded-lg border px-3 py-2 text-xs',
+                d2State.status === 'success'
+                  ? 'border-emerald-400/25 bg-emerald-400/10 text-emerald-200'
+                  : d2State.status === 'error'
+                    ? 'border-red-400/25 bg-red-400/10 text-red-200'
+                    : 'border-white/10 bg-white/[0.03] text-slate-400',
+              )}
+            >
+              {d2State.message}
+            </p>
+          )}
+
           <div className="mt-3 grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -422,4 +507,3 @@ export function QuickSiteFlowBuilder() {
     </div>
   );
 }
-

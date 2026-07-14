@@ -7,53 +7,59 @@ Template padrão para coletar briefing de cliente e gerar, no Google AI Studio c
 Use este bloco como formulário de entrada. Se o cliente não souber responder algo, marque como `a definir`.
 
 1. Qual é o nome da empresa, marca ou produto?
-2. Qual é o objetivo principal do site?
+2. Qual é o nome do responsável pelo contato?
+3. Qual é o e-mail do lead?
+4. Qual é o WhatsApp do lead?
+5. Qual é o objetivo principal do site?
    - Captar leads
    - Vender serviço
    - Vender produto
    - Apresentar empresa
    - Agendar contatos
    - Outro
-3. Qual é o segmento do negócio?
-4. Quem é o público-alvo?
-5. Qual é a principal dor ou desejo do cliente final?
-6. Quais serviços, produtos ou soluções devem aparecer no site?
-7. Qual é a ação principal esperada do visitante?
+6. Qual é o segmento do negócio?
+7. Quem é o público-alvo?
+8. Qual é a principal dor ou desejo do cliente final?
+9. Quais serviços, produtos ou soluções devem aparecer no site?
+10. Qual é a ação principal esperada do visitante?
    - WhatsApp
    - Formulário
    - Ligação
    - Agendamento
    - Compra
-8. Existe identidade visual pronta?
+11. Existe identidade visual pronta?
    - Logo
    - Cores
    - Tipografia
    - Manual de marca
-9. Quais referências visuais o cliente gosta?
-10. Quais páginas ou seções são obrigatórias?
-11. Quais diferenciais da empresa precisam ser destacados?
-12. Há provas sociais disponíveis?
+12. Quais referências visuais o cliente gosta?
+13. Quais páginas ou seções são obrigatórias?
+14. Quais diferenciais da empresa precisam ser destacados?
+15. Há provas sociais disponíveis?
    - Depoimentos
    - Cases
    - Números
    - Logos de clientes
-13. Há fotos, vídeos, artes, prints ou materiais que devem ser usados?
-14. Qual cidade, região ou país o site deve atender?
-15. Qual tom de voz deve ser adotado?
+16. Há fotos, vídeos, artes, prints ou materiais que devem ser usados?
+17. Qual cidade, região ou país o site deve atender?
+18. Qual tom de voz deve ser adotado?
    - Institucional
    - Premium
    - Técnico
    - Comercial
    - Humano
-16. Qual é o prazo desejado?
-17. Há concorrentes ou sites de referência?
-18. Qual CTA principal deve aparecer em todo o site?
+19. Qual é o prazo desejado?
+20. Há concorrentes ou sites de referência?
+21. Qual CTA principal deve aparecer em todo o site?
 
 ## 2. Campos mínimos para montar o prompt
 
 Se o cliente trouxer pouco conteúdo, ainda assim o prompt deve conter estes campos:
 
 - `empresa`
+- `contact_name`
+- `contact_email`
+- `contact_whatsapp`
 - `segmento`
 - `objetivo`
 - `publico`
@@ -173,4 +179,3 @@ Não faça um site simples demais.
 4. Escolha a versão longa ou curta do prompt.
 5. Execute no Gemini.
 6. Use o resultado para montar o site no padrão FatorQ.
-

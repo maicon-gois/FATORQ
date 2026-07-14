@@ -1,0 +1,10 @@
+.codex-video-review/
+.codex-review-*/
+.codex-dev-*.log
+.codex-prod-*.log
+docs/
+FATORQ-main/
+logo 3d model.glb
+public/fonts/
+public/media/storyboards/
+public/models/logo-3d-model-hero.glb

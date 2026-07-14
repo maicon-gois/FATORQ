@@ -1,69 +1,183 @@
 'use client';
 
-import Image from 'next/image';
-import { motion } from 'motion/react';
-import { ArrowRight, Sparkles } from 'lucide-react';
-import { ParticleBg } from '@/components/ui/particle-bg';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'motion/react';
+import { ArrowRight } from 'lucide-react';
+import { Hero3DStage } from '@/components/v2/hero-3d-stage';
 import { siteConfig, whatsappUrl } from '@/lib/site-config';
 
+const wordEase = [0.22, 1, 0.36, 1] as const;
+
+type AnimatedLineProps = {
+  children: string;
+  delay: number;
+  ready: boolean;
+  accent?: boolean;
+};
+
+function AnimatedLine({ children, delay, ready, accent = false }: AnimatedLineProps) {
+  return (
+    <span className="block overflow-hidden pb-[0.09em]">
+      <motion.span
+        className={`block ${accent ? 'bg-gradient-to-r from-white via-cyan-100 to-cyan-400 bg-clip-text text-transparent' : ''}`}
+        initial={{ y: '105%', opacity: 0, filter: 'blur(8px)' }}
+        animate={ready ? { y: '0%', opacity: 1, filter: 'blur(0px)' } : { y: '105%', opacity: 0, filter: 'blur(8px)' }}
+        transition={{ duration: 1.02, delay, ease: wordEase }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
 export function V2Hero() {
-  const { hero, brand } = siteConfig;
+  const sectionRef = useRef<HTMLElement>(null);
+  const [visualReady, setVisualReady] = useState(false);
+  const [activated, setActivated] = useState(false);
+  const [corePhase, setCorePhase] = useState<'ambient' | 'reveal' | 'brand' | 'cinematic'>('ambient');
+  const [interactiveNarrative, setInteractiveNarrative] = useState(false);
+  const copyTargetX = useMotionValue(0);
+  const copyTargetY = useMotionValue(0);
+  const copyParallaxX = useSpring(copyTargetX, { stiffness: 95, damping: 24, mass: 0.45 });
+  const copyParallaxY = useSpring(copyTargetY, { stiffness: 95, damping: 24, mass: 0.45 });
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end end'] });
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 230, damping: 34, mass: 0.16, restDelta: 0.0005 });
+  const contentOpacity = useTransform(smoothProgress, [0, 0.42, 0.76], [1, 1, 0]);
+  const contentY = useTransform(smoothProgress, [0.34, 0.78], [0, -28]);
+  const hintOpacity = useTransform(smoothProgress, [0, 0.42, 0.7], [1, 1, 0]);
+  const progressScale = useTransform(smoothProgress, [0.02, 0.98], [0, 1]);
+
+  const handleSceneReady = useCallback(() => setVisualReady(true), []);
+
+  useEffect(() => {
+    const onActivated = () => setActivated(true);
+    const onPhase = (event: Event) => {
+      const phase = (event as CustomEvent<{ phase: 'ambient' | 'reveal' | 'brand' | 'cinematic' }>).detail.phase;
+      setCorePhase(phase);
+      if (phase === 'cinematic') {
+        copyTargetX.set(0);
+        copyTargetY.set(0);
+      }
+    };
+    const onCorePointer = (event: Event) => {
+      const { x, y } = (event as CustomEvent<{ x: number; y: number }>).detail;
+      copyTargetX.set(x * -4.5);
+      copyTargetY.set(y * -3.2);
+    };
+
+    window.addEventListener('fatorq:core-activated', onActivated);
+    window.addEventListener('fatorq:core-phase', onPhase);
+    window.addEventListener('fatorq:core-pointer', onCorePointer);
+    return () => {
+      window.removeEventListener('fatorq:core-activated', onActivated);
+      window.removeEventListener('fatorq:core-phase', onPhase);
+      window.removeEventListener('fatorq:core-pointer', onCorePointer);
+    };
+  }, [copyTargetX, copyTargetY]);
+
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 768px)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setInteractiveNarrative(desktop.matches && !reducedMotion.matches);
+
+    update();
+    desktop.addEventListener('change', update);
+    reducedMotion.addEventListener('change', update);
+    return () => {
+      desktop.removeEventListener('change', update);
+      reducedMotion.removeEventListener('change', update);
+    };
+  }, []);
+
+  const copyReady = visualReady && (!interactiveNarrative || corePhase === 'brand');
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-[#050508] pt-20">
-      <ParticleBg />
-      <div className="absolute inset-0">
-        <Image src="/hero-cover.png" alt="" fill priority quality={95} className="object-cover object-[68%_42%] opacity-[0.58] hero-v2-ken-burns" sizes="100vw" aria-hidden />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050508]/95 via-[#050508]/55 to-[#050508]/20" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_40%,rgba(6,182,212,0.15),transparent_45%)]" />
-      </div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#06B6D4]/15 rounded-full blur-[140px] pointer-events-none" />
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16">
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
-          <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <p className="inline-flex items-center gap-2 mb-8 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 text-xs font-semibold uppercase tracking-wider">
-              <Sparkles className="w-3 h-3" />
-              {brand.ecosystem}
-            </p>
-            <h1 className="font-[family-name:var(--font-space)] text-4xl sm:text-5xl lg:text-6xl xl:text-[3.4rem] font-black tracking-tight text-white leading-[1.05] mb-6">
-              {hero.headline}{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#06B6D4] to-[#38BDF8]">{hero.headlineHighlight}</span>
+    <section ref={sectionRef} id="inicio" className="relative min-h-[820px] bg-[#020507] md:h-[220vh] md:min-h-0">
+      <div className="relative flex min-h-[820px] items-center overflow-hidden bg-[#020507] pt-16 md:sticky md:top-0 md:h-screen md:min-h-[720px]">
+        <div className="absolute inset-0 z-0">
+          <Hero3DStage scrollProgress={smoothProgress} onReady={handleSceneReady} />
+        </div>
+
+        <div className="pointer-events-none absolute inset-0 z-[2] bg-[linear-gradient(90deg,#020507_0%,rgba(2,5,7,0.95)_18%,rgba(2,5,7,0.55)_39%,rgba(2,5,7,0.08)_63%,rgba(2,5,7,0.12)_100%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-36 bg-gradient-to-b from-[#020507]/90 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-t from-[#020507]/90 to-transparent" />
+
+        <div className="relative z-20 mx-auto w-full max-w-[1480px] px-6 sm:px-10 lg:px-14 xl:px-20">
+          <motion.div style={{ opacity: contentOpacity, y: contentY }} className="max-w-[760px]">
+            <motion.div style={{ x: copyParallaxX, y: copyParallaxY }}>
+            <motion.div
+              animate={corePhase === 'cinematic' ? { opacity: 0, y: -18 } : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.78, ease: wordEase }}
+            >
+            <motion.div
+              initial={{ opacity: 0, x: -18 }}
+              animate={copyReady ? { opacity: 1, x: 0 } : { opacity: 0, x: -18 }}
+              transition={{ duration: 0.78, delay: 0.08, ease: wordEase }}
+              className="mb-7 flex items-center gap-4"
+            >
+              <span className="h-px w-12 bg-gradient-to-r from-cyan-200/80 to-transparent" />
+              <p className="text-[10px] font-medium uppercase tracking-[0.34em] text-cyan-100/75">
+                {siteConfig.brand.ecosystem}
+              </p>
+            </motion.div>
+
+            <h1
+              aria-label="Inteligencia em movimento."
+              className="max-w-[760px] font-[family-name:var(--font-space)] text-[3.5rem] font-semibold leading-[0.9] tracking-[-0.065em] text-white sm:text-[5rem] lg:text-[6.2rem] xl:text-[7rem]"
+            >
+              <AnimatedLine delay={0.12} ready={copyReady}>Inteligencia em</AnimatedLine>
+              <AnimatedLine delay={0.32} ready={copyReady} accent>movimento.</AnimatedLine>
             </h1>
-            <p className="text-slate-300 text-lg md:text-xl max-w-xl mb-10 font-light leading-relaxed">{hero.subheadline}</p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center justify-center gap-3 bg-white text-[#050508] px-8 py-4 rounded-xl font-semibold hover:scale-105 transition-transform shadow-[0_0_24px_rgba(6,182,212,0.3)]">
-                {hero.primaryCta}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
-              <a href="#servicos" className="inline-flex items-center justify-center gap-3 bg-white/[0.04] border border-white/10 text-white px-8 py-4 rounded-xl font-semibold backdrop-blur-md hover:bg-white/10 hover:border-cyan-500/30 transition-all">
-                {hero.secondaryCta}
-              </a>
-            </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.2 }} className="relative hidden lg:block h-[560px] perspective-1000">
-            <motion.div animate={{ y: [-8, 8, -8] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-0 right-0 w-[420px] rounded-2xl overflow-hidden border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.55)] bg-[#0A0A14]/70 backdrop-blur-xl">
-              <div className="h-9 border-b border-white/10 flex items-center px-4 gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-                <span className="ml-auto text-[10px] text-slate-500 font-mono">fatorq.com.br</span>
-              </div>
-              <div className="relative aspect-[16/10]">
-                <Image src="/hero-cover.png" alt="FatorQ" fill className="object-cover object-center" quality={95} sizes="420px" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050508]/80 via-transparent to-transparent" />
-              </div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 14 }}
+              animate={copyReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+              transition={{ duration: 0.86, delay: 0.54, ease: wordEase }}
+              className="mt-7 max-w-[520px] text-sm font-light leading-6 text-slate-300/80 sm:text-base"
+            >
+              Software, IA e infraestrutura para negocios que avancam.
+            </motion.p>
+
+            <motion.a
+              initial={{ opacity: 0, y: 12 }}
+              animate={copyReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+              transition={{ duration: 0.8, delay: 0.68, ease: wordEase }}
+              href={whatsappUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-7 inline-flex items-center gap-3 border-b border-white/20 pb-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:border-cyan-200/70 hover:text-cyan-100"
+            >
+              Iniciar projeto
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            </motion.a>
             </motion.div>
-            <motion.div animate={{ y: [10, -10, 10], rotate: [-1, 1, -1] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} className="absolute bottom-8 left-0 w-[260px] p-5 rounded-2xl bg-black border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.2)]">
-              <Image src="/logo-fatorq.png" alt="FatorQ Logo" width={220} height={138} className="w-full h-auto object-contain mx-auto" quality={95} />
-              <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500 text-center mt-3">{brand.ecosystem}</p>
-            </motion.div>
-            <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity }} className="absolute top-24 left-8 px-4 py-2 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-mono">
-              SaaS · Sites · IA · Infra
             </motion.div>
           </motion.div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: visualReady ? 1 : 0 }}
+          transition={{ duration: 0.5, delay: 1.12 }}
+          style={{ opacity: hintOpacity }}
+          className="pointer-events-none absolute bottom-7 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex"
+        >
+          <span className={`h-1.5 w-1.5 rounded-full transition-colors duration-500 ${activated ? 'bg-cyan-200 shadow-[0_0_16px_rgba(165,243,252,0.95)]' : 'bg-white/45'}`} />
+          <span className="text-[9px] font-medium uppercase tracking-[0.32em] text-slate-400">
+            {activated
+              ? 'Role para continuar'
+              : corePhase === 'brand'
+                ? 'Arraste para girar ou segure para atravessar'
+                : corePhase === 'reveal'
+                  ? 'Ignicao sincronizada'
+                  : 'Aproxime o cursor para energizar'}
+          </span>
+        </motion.div>
+
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-px bg-white/[0.055]">
+          <motion.div style={{ scaleX: progressScale }} className="h-px origin-left bg-gradient-to-r from-transparent via-cyan-200/80 to-transparent" />
+        </div>
       </div>
-      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#06B6D4]/50 to-transparent" />
     </section>
   );
 }

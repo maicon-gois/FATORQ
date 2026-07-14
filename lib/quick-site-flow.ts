@@ -4,6 +4,9 @@ export type DeliveryMode = 'landing' | 'institutional' | 'multi-page' | 'catalog
 
 export type QuickSiteBriefing = {
   rawClientScript: string;
+  contactName: string;
+  contactEmail: string;
+  contactWhatsapp: string;
   companyName: string;
   siteType: DeliveryMode;
   segment: string;
@@ -26,6 +29,16 @@ export type QuickSiteBriefing = {
   ecosystemLinks: string[];
 };
 
+export type D2LeadPayload = {
+  name: string;
+  email: string;
+  whatsapp: string;
+  businessDesc: string;
+  wants: string;
+  templateId: string | null;
+  source: 'fatorq-fluxo-rapido';
+};
+
 export const quickSiteEcosystemOptions = [
   'FatorQ Sites',
   'LIA CRM',
@@ -35,6 +48,9 @@ export const quickSiteEcosystemOptions = [
 
 export const defaultQuickSiteBriefing: QuickSiteBriefing = {
   rawClientScript: '',
+  contactName: '',
+  contactEmail: '',
+  contactWhatsapp: '',
   companyName: '',
   siteType: 'landing',
   segment: '',
@@ -62,6 +78,13 @@ const SITE_TYPE_LABELS: Record<DeliveryMode, string> = {
   institutional: 'Site institucional',
   'multi-page': 'Site multipáginas',
   catalog: 'Catálogo ou vitrine comercial',
+};
+
+const D2_TEMPLATE_BY_SITE_TYPE: Record<DeliveryMode, string> = {
+  landing: 'landing-page-v1',
+  institutional: 'site-institucional-v1',
+  'multi-page': 'site-institucional-v1',
+  catalog: 'site-institucional-v1',
 };
 
 const requiredBriefingFields: Array<keyof QuickSiteBriefing> = [
@@ -110,6 +133,43 @@ export function buildQuickSiteJson(briefing: QuickSiteBriefing) {
   };
 }
 
+export function buildD2LeadPayload(briefing: QuickSiteBriefing): D2LeadPayload {
+  const contactName = fallback(briefing.contactName || briefing.companyName, '');
+  const businessDesc = [
+    briefing.companyName && `Empresa: ${briefing.companyName}`,
+    briefing.segment && `Segmento: ${briefing.segment}`,
+    briefing.audience && `Público-alvo: ${briefing.audience}`,
+    briefing.location && `Região: ${briefing.location}`,
+    briefing.painPoint && `Dor principal: ${briefing.painPoint}`,
+    briefing.rawClientScript && `Script bruto: ${briefing.rawClientScript}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  const wants = [
+    `Tipo de entrega: ${SITE_TYPE_LABELS[briefing.siteType]}`,
+    briefing.objective && `Objetivo: ${briefing.objective}`,
+    briefing.offer && `Oferta: ${briefing.offer}`,
+    briefing.primaryCta && `CTA: ${briefing.primaryCta}`,
+    briefing.deadline && `Prazo: ${briefing.deadline}`,
+    briefing.differentials && `Diferenciais: ${briefing.differentials}`,
+    briefing.materials && `Materiais: ${briefing.materials}`,
+    briefing.requiredSections && `Seções: ${briefing.requiredSections}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  return {
+    name: contactName,
+    email: fallback(briefing.contactEmail, ''),
+    whatsapp: clean(briefing.contactWhatsapp),
+    businessDesc,
+    wants,
+    templateId: D2_TEMPLATE_BY_SITE_TYPE[briefing.siteType],
+    source: 'fatorq-fluxo-rapido',
+  };
+}
+
 export function buildQuickSitePrompt(briefing: QuickSiteBriefing, mode: PromptMode) {
   const ecosystem = briefing.ecosystemLinks.length
     ? briefing.ecosystemLinks.join(', ')
@@ -142,6 +202,9 @@ MISSÃO
 Criar uma experiência web completa, moderna e orientada à conversão para o cliente abaixo. O site deve parecer um produto digital premium, com acabamento de empresa de tecnologia, e deve ficar pronto para implementação rápida no padrão FatorQ.
 
 BRIEFING DO CLIENTE
+${listLine('Contato responsável', briefing.contactName)}
+${listLine('E-mail do lead', briefing.contactEmail)}
+${listLine('WhatsApp do lead', briefing.contactWhatsapp)}
 ${listLine('Empresa', briefing.companyName)}
 ${listLine('Tipo de site', SITE_TYPE_LABELS[briefing.siteType])}
 ${listLine('Segmento', briefing.segment)}
@@ -204,4 +267,3 @@ IMPLEMENTAÇÃO ESPERADA
 
 Agora entregue a solução completa com foco em conversão, sofisticação, clareza, velocidade de execução e aderência ao briefing.`);
 }
-

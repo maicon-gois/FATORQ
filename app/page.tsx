@@ -15,6 +15,7 @@ import { V2Timeline } from '@/components/v2/timeline';
 import { V2TechCloud } from '@/components/v2/tech-cloud';
 import { V2Cta } from '@/components/v2/cta';
 import { V2Footer } from '@/components/v2/footer';
+import { V2ParticleContinuum } from '@/components/v2/particle-continuum';
 
 export default function HomePage() {
   return (
@@ -22,8 +23,11 @@ export default function HomePage() {
       <V2Navbar />
       <main>
         <V2Hero />
-        <V2BrandMarquee />
-        <V2Approach />
+        <div className="relative isolate overflow-hidden bg-[#03080c]">
+          <V2ParticleContinuum />
+          <V2BrandMarquee />
+          <V2Approach />
+        </div>
         <V2Services />
         <V2DemoSection />
         <V2SitesShowcase />

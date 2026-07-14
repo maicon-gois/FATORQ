@@ -19,7 +19,7 @@
     "whatsapp": "5553999640159",
     "whatsappMessage": "Olá! Vim pelo site FatorQ e gostaria de agendar uma conversa com um especialista.",
     "email": "contato@fatorq.com.br",
-    "city": "Rio Grande, RS — Brasil",
+    "city": "Florianópolis, SC — Brasil",
     "meetLabel": "Agendar reunião (Google Meet)"
   },
   "hero": {
@@ -28,6 +28,12 @@
     "subheadline": "Desenvolvemos software customizado, SaaS e presença digital para negócios, saúde e indústria — acelerando sua transformação com produtos robustos, design premium e governança de entrega.",
     "primaryCta": "Agendar conversa com especialista",
     "secondaryCta": "Ver ecossistema FatorQ"
+  },
+  "hero3d": {
+    "mode": "quantum",
+    "label": "FatorQ Quantum Core",
+    "splineSceneUrl": "",
+    "notes": "mode: quantum (blockout procedural) | r3f (logo GLB) | spline (URL publica em splineSceneUrl)"
   },
   "approach": {
     "label": "Nossa abordagem",
@@ -43,7 +49,7 @@
       },
       {
         "title": "Squads enxutas que entendem negócio e tecnologia",
-        "description": "Diagnóstico no Meet, execução documentada e entrega com chancela FatorQ Ecosystem."
+        "description": "Diagnóstico no Meet, execução documentada e entrega com validação FatorQ Ecosystem."
       }
     ]
   },
@@ -115,7 +121,7 @@
   },
   "trust": {
     "label": "Ecossistema",
-    "title": "Marcas e produtos com chancela FatorQ",
+    "title": "Marcas e produtos com validação FatorQ",
     "subtitle": "Deslize para conhecer — cada solução com identidade própria e padrão de excelência compartilhado.",
     "brands": ["LIA CRM", "D2 Labs", "FIELD VALID", "FatorQ Sites", "FatorQ Infra"]
   },
@@ -176,7 +182,7 @@
       { "title": "Entrega real", "description": "Sistemas em produção, não promessas em slide." },
       { "title": "Design com propósito", "description": "Confiança corporativa do logo ao painel." },
       { "title": "Parceria consultiva", "description": "Entendemos a dor antes de codificar." },
-      { "title": "Ecossistema integrado", "description": "LIA, D2 Labs e custom com chancela FatorQ." }
+      { "title": "Ecossistema integrado", "description": "LIA, D2 Labs e custom com validação FatorQ." }
     ]
   },
   "portfolio": {
@@ -234,9 +240,10 @@
     ]
   },
   "seal": {
-    "title": "Chancela FatorQ",
-    "image": "/media/temp/brand/fatorq-seal.png",
-    "description": "Todo produto homologado carrega o selo FatorQ Ecosystem — design premium, backend documentado e suporte consultivo."
+    "label": "Validação",
+    "title": "Validação FatorQ",
+    "image": "/media/brand/fatorq-seal-mark-transparent.png",
+    "description": "Todo produto homologado passa pela validação FatorQ Ecosystem — design premium, backend documentado e suporte consultivo."
   },
   "humanProof": {
     "label": "Proximidade em cada etapa",
@@ -259,7 +266,7 @@
       "FatorQ Sites",
       "FatorQ Infra",
       "FatorQ Creative",
-      "Chancela FatorQ",
+      "Validação FatorQ",
       "Sites Odonto",
       "Automação IA",
       "Monitoramento NOC"
