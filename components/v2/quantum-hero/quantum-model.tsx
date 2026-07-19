@@ -6,10 +6,12 @@ import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { QuantumLogoModel } from '@/components/v2/quantum-hero/quantum-logo-model';
+import { QuantumSphereModel } from '@/components/v2/quantum-hero/quantum-sphere-model';
 import type { QuantumExperienceRef, QuantumPhase } from '@/components/v2/quantum-hero/quantum-interaction';
 
 type QuantumModelProps = {
   experience: QuantumExperienceRef;
+  onCoreReady: () => void;
 };
 
 type HotspotBounds = {
@@ -20,8 +22,6 @@ type HotspotBounds = {
 };
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-const silverShell = new THREE.Color('#808a92');
-const cyanShell = new THREE.Color('#86edfa');
 const magneticStart = new THREE.Vector3();
 const magneticEnd = new THREE.Vector3();
 const ARC_POINT_COUNT = 28;
@@ -44,7 +44,7 @@ function announcePhase(phase: QuantumPhase) {
   window.dispatchEvent(new CustomEvent('fatorq:core-phase', { detail: { phase } }));
 }
 
-export function QuantumModel({ experience }: QuantumModelProps) {
+export function QuantumModel({ experience, onCoreReady }: QuantumModelProps) {
   const { viewport } = useThree();
   const rootRef = useRef<THREE.Group>(null);
   const coreFollowerRef = useRef<THREE.Group>(null);
@@ -56,8 +56,6 @@ export function QuantumModel({ experience }: QuantumModelProps) {
   const innerMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const outerHighlightMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
   const middleHighlightMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
-  const shellRef = useRef<THREE.Mesh>(null);
-  const shellMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const energyRef = useRef<THREE.Mesh>(null);
   const energyMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
   const contactRef = useRef<THREE.Mesh>(null);
@@ -66,6 +64,7 @@ export function QuantumModel({ experience }: QuantumModelProps) {
   const ignitionPulseMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
   const hotspotRectRef = useRef<HotspotBounds | null>(null);
   const simulationTime = useRef(0);
+  const revealTime = useRef(0);
   const phaseSent = useRef<QuantumPhase>('ambient');
   const activationTime = useRef<number | null>(null);
   const modelX = viewport.width * 0.2;
@@ -222,6 +221,9 @@ export function QuantumModel({ experience }: QuantumModelProps) {
       interaction.charge = 1;
       interaction.activationRequested = true;
     };
+    const requestReveal = () => {
+      interaction.revealRequested = true;
+    };
 
     const reset = () => {
       interaction.pressed = false;
@@ -239,6 +241,7 @@ export function QuantumModel({ experience }: QuantumModelProps) {
     window.addEventListener('pointerup', release);
     window.addEventListener('pointercancel', release);
     window.addEventListener('blur', reset);
+    window.addEventListener('fatorq:request-reveal', requestReveal);
     window.addEventListener('fatorq:request-activation', requestActivation);
     window.addEventListener('resize', updateHotspotRect, { passive: true });
 
@@ -248,6 +251,7 @@ export function QuantumModel({ experience }: QuantumModelProps) {
       window.removeEventListener('pointerup', release);
       window.removeEventListener('pointercancel', release);
       window.removeEventListener('blur', reset);
+      window.removeEventListener('fatorq:request-reveal', requestReveal);
       window.removeEventListener('fatorq:request-activation', requestActivation);
       window.removeEventListener('resize', updateHotspotRect);
       window.cancelAnimationFrame(discoveryFrame);
@@ -268,8 +272,9 @@ export function QuantumModel({ experience }: QuantumModelProps) {
     const intro = THREE.MathUtils.smoothstep(time, 0.02, 0.55);
 
     interaction.proximity = THREE.MathUtils.damp(interaction.proximity, interaction.proximityTarget, 8.5, delta);
-    interaction.reveal = THREE.MathUtils.damp(interaction.reveal, interaction.revealRequested ? 1 : 0, 6.8, delta);
-    interaction.brand = interaction.reveal;
+    if (interaction.revealRequested) revealTime.current = Math.min(revealTime.current + delta, 2.15);
+    interaction.reveal = THREE.MathUtils.smoothstep(revealTime.current, 0.22, 1.78);
+    interaction.brand = THREE.MathUtils.smoothstep(revealTime.current, 0.72, 2.12);
     interaction.orbitInput = THREE.MathUtils.damp(interaction.orbitInput, interaction.orbitTarget, 5.8, delta);
     interaction.look.x = THREE.MathUtils.damp(interaction.look.x, interaction.lookTarget.x, 7.5, delta);
     interaction.look.y = THREE.MathUtils.damp(interaction.look.y, interaction.lookTarget.y, 7.5, delta);
@@ -306,7 +311,10 @@ export function QuantumModel({ experience }: QuantumModelProps) {
 
     const cinematic = interaction.cinematic;
     const reveal = interaction.reveal;
-    const systemReveal = THREE.MathUtils.smoothstep(reveal, 0.01, 0.72);
+    const brand = interaction.brand;
+    const outerReveal = THREE.MathUtils.smoothstep(brand, 0.02, 0.72);
+    const middleReveal = THREE.MathUtils.smoothstep(brand, 0.16, 0.86);
+    const innerReveal = THREE.MathUtils.smoothstep(brand, 0.3, 0.98);
     const charge = interaction.charge;
     const ringBurst = THREE.MathUtils.smoothstep(cinematic, 0.02, 0.78);
     const ringFade = 1 - THREE.MathUtils.smoothstep(cinematic, 0.12, 0.82);
@@ -315,10 +323,11 @@ export function QuantumModel({ experience }: QuantumModelProps) {
     const orbitDirection = localOrbit < -0.06 ? -1 : 1;
     const orbitEnergy = 0.52 + Math.abs(localOrbit) * 1.6 + charge * 7.8 + cinematic * 1.8;
     const orbitalStep = delta * orbitEnergy * orbitDirection;
+    const brandOffset = THREE.MathUtils.smoothstep(brand, 0.04, 0.96);
 
     root.visible = true;
 
-    root.position.x = THREE.MathUtils.damp(root.position.x, modelX, 12, delta);
+    root.position.x = THREE.MathUtils.damp(root.position.x, modelX * brandOffset, 8.5, delta);
     root.position.y = THREE.MathUtils.damp(root.position.y, Math.sin(time * 0.68) * 0.012, 12, delta);
     root.scale.setScalar(0.98 + intro * 0.02);
 
@@ -333,7 +342,7 @@ export function QuantumModel({ experience }: QuantumModelProps) {
       outerRingRef.current.rotation.x += orbitalStep * 0.72;
       outerRingRef.current.rotation.y += orbitalStep * 0.46;
       outerRingRef.current.rotation.z += orbitalStep * 0.18;
-      outerRingRef.current.scale.setScalar(Math.max(systemReveal * ringExpansion, 0.001));
+      outerRingRef.current.scale.setScalar(Math.max(outerReveal * ringExpansion, 0.001));
     }
 
     if (middleRingRef.current) {
@@ -341,7 +350,7 @@ export function QuantumModel({ experience }: QuantumModelProps) {
       middleRingRef.current.rotation.x -= orbitalStep * 0.56;
       middleRingRef.current.rotation.y += orbitalStep * 0.82;
       middleRingRef.current.rotation.z -= orbitalStep * 0.27;
-      middleRingRef.current.scale.setScalar(Math.max(systemReveal * ringExpansion * 1.08, 0.001));
+      middleRingRef.current.scale.setScalar(Math.max(middleReveal * ringExpansion * 1.08, 0.001));
     }
 
     if (innerRingRef.current) {
@@ -349,36 +358,25 @@ export function QuantumModel({ experience }: QuantumModelProps) {
       innerRingRef.current.rotation.x += orbitalStep * 0.94;
       innerRingRef.current.rotation.y -= orbitalStep * 0.64;
       innerRingRef.current.rotation.z += orbitalStep * 0.38;
-      innerRingRef.current.scale.setScalar(Math.max(systemReveal * ringExpansion * 1.16, 0.001));
+      innerRingRef.current.scale.setScalar(Math.max(innerReveal * ringExpansion * 1.16, 0.001));
     }
 
-    [outerMaterialRef.current, middleMaterialRef.current, innerMaterialRef.current].forEach((material, index) => {
+    const ringMaterials: Array<[THREE.MeshStandardMaterial | null, number]> = [
+      [outerMaterialRef.current, outerReveal],
+      [middleMaterialRef.current, middleReveal],
+      [innerMaterialRef.current, innerReveal],
+    ];
+    ringMaterials.forEach(([material, ringReveal], index) => {
       if (!material) return;
-      material.opacity = ringFade * systemReveal;
+      material.opacity = ringFade * ringReveal;
       material.emissiveIntensity = 0.34 + charge * 2.2 + Math.sin(time * 2.1 + index) * 0.08;
     });
 
     if (outerHighlightMaterialRef.current) {
-      outerHighlightMaterialRef.current.opacity = ringFade * systemReveal;
+      outerHighlightMaterialRef.current.opacity = ringFade * outerReveal;
     }
     if (middleHighlightMaterialRef.current) {
-      middleHighlightMaterialRef.current.opacity = ringFade * systemReveal;
-    }
-
-    if (shellRef.current) {
-      shellRef.current.visible = true;
-      const shellScale = (0.6 + interaction.brand * 0.4) * (1 + cinematic * 0.08) * (1 - charge * 0.04);
-      shellRef.current.scale.setScalar(Math.max(shellScale, 0.001));
-      shellRef.current.rotation.y += delta * (0.38 + Math.abs(localOrbit) * 0.16);
-      shellRef.current.rotation.x = Math.sin(time * 0.42) * 0.08;
-    }
-
-    if (shellMaterialRef.current) {
-      shellMaterialRef.current.color.lerpColors(silverShell, cyanShell, interaction.brand);
-      shellMaterialRef.current.metalness = THREE.MathUtils.lerp(0.9, 0.24, interaction.brand);
-      shellMaterialRef.current.roughness = THREE.MathUtils.lerp(0.22, 0.42, interaction.brand);
-      shellMaterialRef.current.opacity = 1 - THREE.MathUtils.smoothstep(interaction.brand, 0.04, 0.9);
-      shellMaterialRef.current.emissiveIntensity = 0.08 + interaction.brand * 0.42 + charge * 2.6;
+      middleHighlightMaterialRef.current.opacity = ringFade * middleReveal;
     }
 
     if (energyRef.current && energyMaterialRef.current) {
@@ -434,7 +432,7 @@ export function QuantumModel({ experience }: QuantumModelProps) {
   });
 
   return (
-    <group ref={rootRef} position={[modelX, 0, 0]}>
+    <group ref={rootRef} position={[0, 0, 0]}>
       <mesh ref={outerRingRef} rotation={[0.42, 0.1, 0.18]} scale={0.001}>
         <torusGeometry args={[1.2, 0.078, 18, 128]} />
         <meshStandardMaterial ref={outerMaterialRef} color="#14323c" metalness={0.24} roughness={0.46} emissive="#08728a" emissiveIntensity={0.4} transparent opacity={0} />
@@ -464,20 +462,9 @@ export function QuantumModel({ experience }: QuantumModelProps) {
           <meshBasicMaterial ref={energyMaterialRef} color="#23d9f5" transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
         </mesh>
 
-        <mesh ref={shellRef} position={[0, 0, -0.04]} scale={0.6} renderOrder={2}>
-          <sphereGeometry args={[0.7, 48, 48]} />
-          <meshStandardMaterial
-            ref={shellMaterialRef}
-            color="#808a92"
-            emissive="#0b4352"
-            emissiveIntensity={0.08}
-            metalness={0.9}
-            roughness={0.22}
-            transparent
-            opacity={1}
-            depthWrite={false}
-          />
-        </mesh>
+        <Suspense fallback={null}>
+          <QuantumSphereModel experience={experience} onReady={onCoreReady} />
+        </Suspense>
 
         <Suspense fallback={null}>
           <QuantumLogoModel experience={experience} />

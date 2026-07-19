@@ -43,6 +43,7 @@ function AnimatedLine({ children, delay, ready, accent = false }: AnimatedLinePr
 export function V2Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visualReady, setVisualReady] = useState(false);
+  const [intentCaptured, setIntentCaptured] = useState(false);
   const [activated, setActivated] = useState(false);
   const [corePhase, setCorePhase] = useState<'ambient' | 'reveal' | 'brand' | 'cinematic'>('ambient');
   const interactiveNarrative = useSyncExternalStore(
@@ -65,6 +66,7 @@ export function V2Hero() {
 
   useEffect(() => {
     const onActivated = () => setActivated(true);
+    const onBootIntent = () => setIntentCaptured(true);
     const onPhase = (event: Event) => {
       const phase = (event as CustomEvent<{ phase: 'ambient' | 'reveal' | 'brand' | 'cinematic' }>).detail.phase;
       setCorePhase(phase);
@@ -80,16 +82,18 @@ export function V2Hero() {
     };
 
     window.addEventListener('fatorq:core-activated', onActivated);
+    window.addEventListener('fatorq:boot-intent', onBootIntent);
     window.addEventListener('fatorq:core-phase', onPhase);
     window.addEventListener('fatorq:core-pointer', onCorePointer);
     return () => {
       window.removeEventListener('fatorq:core-activated', onActivated);
+      window.removeEventListener('fatorq:boot-intent', onBootIntent);
       window.removeEventListener('fatorq:core-phase', onPhase);
       window.removeEventListener('fatorq:core-pointer', onCorePointer);
     };
   }, [copyTargetX, copyTargetY]);
 
-  const copyReady = visualReady && (!interactiveNarrative || corePhase === 'brand');
+  const copyReady = intentCaptured || (visualReady && (!interactiveNarrative || corePhase === 'brand'));
 
   return (
     <section
@@ -102,7 +106,11 @@ export function V2Hero() {
           <Hero3DStage scrollProgress={smoothProgress} onReady={handleSceneReady} />
         </div>
 
-        <div className="pointer-events-none absolute inset-0 z-[2] bg-[linear-gradient(90deg,#020507_0%,rgba(2,5,7,0.95)_18%,rgba(2,5,7,0.55)_39%,rgba(2,5,7,0.08)_63%,rgba(2,5,7,0.12)_100%)]" />
+        <motion.div
+          animate={{ opacity: corePhase === 'cinematic' ? 0.24 : 1 }}
+          transition={{ duration: 0.9, ease: wordEase }}
+          className="pointer-events-none absolute inset-0 z-[2] bg-[linear-gradient(90deg,#020507_0%,rgba(2,5,7,0.95)_18%,rgba(2,5,7,0.55)_39%,rgba(2,5,7,0.08)_63%,rgba(2,5,7,0.12)_100%)]"
+        />
         <div className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-36 bg-gradient-to-b from-[#020507]/90 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-t from-[#020507]/90 to-transparent" />
 
@@ -166,10 +174,16 @@ export function V2Hero() {
           style={{ opacity: hintOpacity }}
           className="pointer-events-none absolute bottom-7 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex"
         >
-          <span className={`h-1.5 w-1.5 rounded-full transition-colors duration-500 ${activated ? 'bg-cyan-200 shadow-[0_0_16px_rgba(165,243,252,0.95)]' : 'bg-white/45'}`} />
+          {activated ? (
+            <span className="quantum-scroll-track relative block h-8 w-px overflow-hidden bg-white/10">
+              <span className="quantum-scroll-beam absolute inset-x-0 top-0 h-3 bg-cyan-100 shadow-[0_0_10px_rgba(165,243,252,0.8)]" />
+            </span>
+          ) : (
+            <span className="h-1.5 w-1.5 rounded-full bg-white/45 transition-colors duration-500" />
+          )}
           <span className="text-[9px] font-medium uppercase tracking-[0.32em] text-slate-400">
             {activated
-              ? 'Role para continuar'
+              ? 'Role para explorar'
               : corePhase === 'brand'
                 ? 'Arraste para girar ou segure para atravessar'
                 : corePhase === 'reveal'

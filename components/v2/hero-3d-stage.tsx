@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 import { type MotionValue } from 'motion/react';
 import { Hero3DQLazy } from '@/components/v2/hero-3d-q-lazy';
 import { QuantumHeroLazy } from '@/components/v2/quantum-hero/quantum-hero-lazy';
@@ -10,6 +10,12 @@ import { QuantumMobileFallback } from '@/components/v2/quantum-hero/quantum-mobi
 import { siteConfig } from '@/lib/site-config';
 
 type HeroRenderMode = 'pending' | 'static' | 'interactive';
+
+declare global {
+  interface Window {
+    __fatorqBootIntent?: boolean;
+  }
+}
 
 const subscribeToInitialCapabilities = () => () => undefined;
 let initialRenderModeSnapshot: HeroRenderMode | undefined;
@@ -73,20 +79,94 @@ type Hero3DStageProps = {
 export function Hero3DStage({ scrollProgress, onReady }: Hero3DStageProps) {
   const { hero3d } = siteConfig;
   const renderMode = useSyncExternalStore(subscribeToInitialCapabilities, getRenderModeSnapshot, getRenderModeServerSnapshot);
+  const [experienceStarted, setExperienceStarted] = useState(false);
   const [webglReady, setWebglReady] = useState(false);
+  const [fallbackEngaged, setFallbackEngaged] = useState(false);
+  const [fallbackPressed, setFallbackPressed] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const webglReadyRef = useRef(false);
+  const pendingRevealRef = useRef(false);
+  const pendingActivationRef = useRef(false);
+
+  const announceIntent = useCallback(() => {
+    setFallbackEngaged(true);
+    window.dispatchEvent(new Event('fatorq:boot-intent'));
+  }, []);
+
+  const requestReveal = useCallback(() => {
+    announceIntent();
+    if (webglReadyRef.current) {
+      window.dispatchEvent(new Event('fatorq:request-reveal'));
+      return;
+    }
+    pendingRevealRef.current = true;
+  }, [announceIntent]);
 
   const markWebglReady = useCallback(() => {
+    if (webglReadyRef.current) return;
+    webglReadyRef.current = true;
     setWebglReady(true);
     onReady();
+    window.dispatchEvent(new Event('fatorq:webgl-ready'));
+
+    if (!pendingRevealRef.current && !pendingActivationRef.current) return;
+    window.requestAnimationFrame(() => {
+      if (pendingRevealRef.current) {
+        window.dispatchEvent(new Event('fatorq:request-reveal'));
+        pendingRevealRef.current = false;
+      }
+      if (pendingActivationRef.current) {
+        window.dispatchEvent(new Event('fatorq:request-activation'));
+        pendingActivationRef.current = false;
+      }
+    });
   }, [onReady]);
 
   useEffect(() => {
     if (renderMode === 'static') onReady();
   }, [onReady, renderMode]);
 
-  if (renderMode === 'pending') {
-    return <Hero3DPlaceholder />;
-  }
+  useEffect(() => {
+    const onPhase = (event: Event) => {
+      const { phase } = (event as CustomEvent<{ phase: string }>).detail;
+      if (phase === 'brand' || phase === 'cinematic') setExperienceStarted(true);
+    };
+
+    window.addEventListener('fatorq:core-phase', onPhase);
+    return () => window.removeEventListener('fatorq:core-phase', onPhase);
+  }, []);
+
+  useEffect(() => {
+    if (hero3d.mode !== 'quantum' || renderMode === 'static' || experienceStarted) return;
+
+    const onEarlyWheel = () => {
+      const stage = stageRef.current;
+      if (!stage) return;
+      const rect = stage.getBoundingClientRect();
+      if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
+      requestReveal();
+    };
+
+    window.addEventListener('wheel', onEarlyWheel, { passive: true });
+    const recoveryFrame = window.requestAnimationFrame(() => {
+      const stage = stageRef.current;
+      const hotspot = stage?.querySelector<HTMLElement>('[data-quantum-logo-hotspot]');
+      const pointerAlreadyInside = hotspot?.matches(':hover') ?? false;
+      const focusAlreadyInside = document.activeElement === hotspot;
+      const scrollAlreadyMoved = window.scrollY > 8;
+      const intentCapturedBeforeHydration = window.__fatorqBootIntent === true;
+
+      if (pointerAlreadyInside || focusAlreadyInside || scrollAlreadyMoved || intentCapturedBeforeHydration) {
+        onEarlyWheel();
+        window.__fatorqBootIntent = false;
+      }
+    });
+
+    return () => {
+      window.removeEventListener('wheel', onEarlyWheel);
+      window.cancelAnimationFrame(recoveryFrame);
+    };
+  }, [experienceStarted, hero3d.mode, renderMode, requestReveal]);
 
   if (renderMode === 'static') {
     if (hero3d.mode === 'quantum') {
@@ -99,13 +179,55 @@ export function Hero3DStage({ scrollProgress, onReady }: Hero3DStageProps) {
   if (hero3d.mode === 'quantum') {
     return (
       <div
+        ref={stageRef}
         data-quantum-stage
-        className="relative h-full min-h-0 w-full overflow-hidden bg-[#030609] [--quantum-core-x:70%] [--quantum-core-y:50%]"
+        data-webgl-ready={webglReady ? 'true' : 'false'}
+        data-core-position={experienceStarted ? 'brand' : 'center'}
+        style={{ '--quantum-core-x': experienceStarted ? '70%' : '50%', '--quantum-core-y': '50%' } as CSSProperties}
+        className="relative h-full min-h-0 w-full overflow-hidden bg-[#030609]"
       >
-        <QuantumHeroLazy scrollProgress={scrollProgress} onReady={markWebglReady} />
-        <QuantumInstantFallback hidden={webglReady} />
+        {renderMode === 'interactive' && (
+          <QuantumHeroLazy key="quantum-webgl" scrollProgress={scrollProgress} onReady={markWebglReady} />
+        )}
+        <QuantumInstantFallback
+          key="quantum-fallback"
+          hidden={webglReady}
+          engaged={fallbackEngaged}
+          pressed={fallbackPressed}
+          ready={webglReady}
+        />
+        <button
+          key="quantum-hotspot"
+          type="button"
+          data-quantum-logo-hotspot
+          aria-busy={!webglReady}
+          aria-label="Aproxime para energizar; segure para ativar o nucleo FatorQ; arraste para girar"
+          onPointerEnter={requestReveal}
+          onPointerDown={() => {
+            setFallbackPressed(true);
+            requestReveal();
+          }}
+          onPointerUp={() => setFallbackPressed(false)}
+          onPointerCancel={() => setFallbackPressed(false)}
+          onPointerLeave={() => setFallbackPressed(false)}
+          onKeyDown={(event) => {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+            requestReveal();
+            if (webglReadyRef.current) {
+              window.dispatchEvent(new Event('fatorq:request-activation'));
+            } else {
+              pendingActivationRef.current = true;
+            }
+          }}
+          className="pointer-events-auto absolute left-[var(--quantum-core-x,50%)] top-[var(--quantum-core-y,50%)] z-[4] h-[min(38vw,500px)] w-[min(38vw,500px)] -translate-x-1/2 -translate-y-1/2 touch-none select-none cursor-grab rounded-full bg-transparent transition-[left] duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] outline-none focus-visible:ring-1 focus-visible:ring-cyan-200/60 active:cursor-grabbing"
+        />
       </div>
     );
+  }
+
+  if (renderMode === 'pending') {
+    return <Hero3DPlaceholder />;
   }
 
   if (hero3d.mode === 'spline' && hero3d.splineSceneUrl) {

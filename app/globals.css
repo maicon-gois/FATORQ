@@ -542,9 +542,139 @@ body {
   will-change: transform, opacity;
 }
 
+.quantum-instant-fallback {
+  opacity: 1;
+  transition: opacity 160ms ease-out;
+}
+
+.quantum-instant-fallback[data-hidden='true'] {
+  opacity: 0;
+}
+
+.quantum-core-orbit {
+  width: var(--quantum-orbit-size, min(18vw, 230px));
+  opacity: 0;
+  scale: 0.82;
+  transition: scale 380ms cubic-bezier(0.16, 1, 0.3, 1), filter 260ms ease, opacity 180ms ease;
+}
+
+.quantum-sphere-poster {
+  filter: drop-shadow(0 0 30px rgba(39, 190, 229, 0.2));
+  transition: scale 340ms cubic-bezier(0.16, 1, 0.3, 1), filter 240ms ease, opacity 240ms ease;
+}
+
+.quantum-core-particle-field {
+  width: var(--quantum-particle-size, min(38vw, 500px));
+  transition: scale 380ms cubic-bezier(0.16, 1, 0.3, 1), filter 260ms ease;
+}
+
+.quantum-instant-fallback[data-engaged='true'] .quantum-core-orbit,
+html[data-fatorq-boot-intent='true'] .quantum-instant-fallback .quantum-core-orbit,
+[data-quantum-stage]:has([data-quantum-logo-hotspot]:hover) .quantum-core-orbit {
+  opacity: 1;
+  scale: 1.14;
+  filter: brightness(1.35) saturate(1.18);
+}
+
+.quantum-instant-fallback[data-engaged='true'] .quantum-sphere-poster,
+html[data-fatorq-boot-intent='true'] .quantum-instant-fallback .quantum-sphere-poster,
+[data-quantum-stage]:has([data-quantum-logo-hotspot]:hover) .quantum-sphere-poster {
+  opacity: 0.32;
+  scale: 1.08;
+  filter: brightness(1.24) saturate(1.12) drop-shadow(0 0 42px rgba(39, 190, 229, 0.34));
+}
+
+.quantum-instant-fallback[data-engaged='true'] .quantum-core-particle-field,
+html[data-fatorq-boot-intent='true'] .quantum-instant-fallback .quantum-core-particle-field,
+[data-quantum-stage]:has([data-quantum-logo-hotspot]:hover) .quantum-core-particle-field {
+  scale: 1.07;
+  filter: brightness(1.32);
+}
+
+.quantum-instant-fallback[data-engaged='true'] .quantum-core-orbit > div:first-child,
+html[data-fatorq-boot-intent='true'] .quantum-instant-fallback .quantum-core-orbit > div:first-child,
+[data-quantum-stage]:has([data-quantum-logo-hotspot]:hover) .quantum-core-orbit > div:first-child {
+  animation-duration: 0.72s !important;
+}
+
+.quantum-instant-fallback[data-engaged='true'] .quantum-core-orbit > div:nth-child(2),
+html[data-fatorq-boot-intent='true'] .quantum-instant-fallback .quantum-core-orbit > div:nth-child(2),
+[data-quantum-stage]:has([data-quantum-logo-hotspot]:hover) .quantum-core-orbit > div:nth-child(2) {
+  animation-duration: 0.56s !important;
+}
+
+.quantum-instant-fallback[data-pressed='true'] .quantum-core-orbit,
+[data-quantum-stage]:has([data-quantum-logo-hotspot]:active) .quantum-core-orbit {
+  scale: 1.24;
+  filter: brightness(1.65) saturate(1.28);
+}
+
+.quantum-boot-wave {
+  width: var(--quantum-core-size, min(12.2vw, 160px));
+  opacity: 0;
+}
+
+.quantum-instant-fallback[data-engaged='true'] .quantum-boot-wave-a,
+html[data-fatorq-boot-intent='true'] .quantum-instant-fallback .quantum-boot-wave-a,
+[data-quantum-stage]:has([data-quantum-logo-hotspot]:hover) .quantum-boot-wave-a {
+  animation: quantum-boot-wave 1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.quantum-instant-fallback[data-pressed='true'] .quantum-boot-wave-b,
+[data-quantum-stage]:has([data-quantum-logo-hotspot]:active) .quantum-boot-wave-b {
+  animation: quantum-boot-wave 0.48s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.quantum-core-status {
+  margin-top: calc(var(--quantum-core-size, min(12.2vw, 160px)) * 0.7);
+  color: rgba(165, 243, 252, 0.48);
+  font-family: var(--font-space), sans-serif;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  transition: color 260ms ease, opacity 260ms ease;
+  white-space: nowrap;
+}
+
+.quantum-core-status i {
+  display: block;
+  width: 3px;
+  height: 3px;
+  background: rgba(165, 243, 252, 0.34);
+  border-radius: 999px;
+  animation: quantum-boot-dot 1.05s ease-in-out infinite;
+}
+
+.quantum-core-status i:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.quantum-core-status i:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.quantum-instant-fallback[data-engaged='true'] .quantum-core-status,
+.quantum-instant-fallback[data-ready='true'] .quantum-core-status,
+html[data-fatorq-boot-intent='true'] .quantum-instant-fallback .quantum-core-status {
+  color: rgba(207, 250, 254, 0.78);
+}
+
 .quantum-blueprint-plane {
-  filter: drop-shadow(0 0 34px rgba(34, 211, 238, 0.09));
+  filter: drop-shadow(0 0 42px rgba(34, 211, 238, 0.14));
+  perspective: 1000px;
   transform-style: preserve-3d;
+}
+
+.quantum-core-positioned {
+  transition: left 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.quantum-blueprint-horizon {
+  background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.48), transparent);
+  box-shadow: 0 0 28px rgba(34, 211, 238, 0.26);
+  animation: quantum-blueprint-horizon 2.2s ease-in-out infinite alternate;
 }
 
 .quantum-blueprint-grid {
@@ -558,9 +688,40 @@ body {
 }
 
 .quantum-blueprint-module {
-  box-shadow: inset 0 0 32px rgba(34, 211, 238, 0.025), 0 0 24px rgba(34, 211, 238, 0.025);
-  animation: quantum-blueprint-module-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  backdrop-filter: blur(2px);
+  --blueprint-yaw: 0deg;
+  box-shadow: inset 0 0 44px rgba(34, 211, 238, 0.045), 0 18px 54px rgba(0, 0, 0, 0.28), 0 0 30px rgba(34, 211, 238, 0.045);
+  animation: quantum-blueprint-module-in 1.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-style: preserve-3d;
+}
+
+.quantum-blueprint-module:first-child {
+  --blueprint-yaw: -5deg;
+}
+
+.quantum-blueprint-module:last-child {
+  --blueprint-yaw: 5deg;
+}
+
+.quantum-blueprint-label {
+  color: rgba(207, 250, 254, 0.78);
+  font-family: var(--font-space), sans-serif;
+  font-size: clamp(9px, 0.72vw, 11px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 14px rgba(103, 232, 249, 0.42);
+  text-transform: uppercase;
+}
+
+.quantum-blueprint-descriptor {
+  color: rgba(148, 210, 221, 0.56);
+  display: block;
+  font-family: var(--font-space), sans-serif;
+  font-size: clamp(6.5px, 0.58vw, 8.5px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  margin-top: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .quantum-blueprint-module::before,
@@ -588,15 +749,15 @@ body {
 }
 
 .quantum-blueprint-delay-1 {
-  animation-delay: 0.08s;
+  animation-delay: 0.12s;
 }
 
 .quantum-blueprint-delay-2 {
-  animation-delay: 0.2s;
+  animation-delay: 0.28s;
 }
 
 .quantum-blueprint-delay-3 {
-  animation-delay: 0.32s;
+  animation-delay: 0.44s;
 }
 
 .quantum-blueprint-scan {
@@ -625,13 +786,46 @@ body {
 @keyframes quantum-blueprint-module-in {
   from {
     opacity: 0;
-    clip-path: inset(50% 48% 50% 48%);
-    filter: blur(8px);
+    clip-path: inset(48% 44% 48% 44%);
+    transform: perspective(1000px) translate3d(0, 92px, -180px) rotateX(54deg) rotateY(var(--blueprint-yaw)) scale(0.78);
   }
   to {
     opacity: 1;
     clip-path: inset(0 0 0 0);
-    filter: blur(0);
+    transform: perspective(1000px) translate3d(0, 0, 0) rotateX(4deg) rotateY(var(--blueprint-yaw)) scale(1);
+  }
+}
+
+@keyframes quantum-blueprint-horizon {
+  from {
+    opacity: 0.28;
+    transform: scaleX(0.7);
+  }
+  to {
+    opacity: 0.9;
+    transform: scaleX(1);
+  }
+}
+
+.quantum-scroll-track {
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+}
+
+.quantum-scroll-beam {
+  animation: quantum-scroll-beam 1.45s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes quantum-scroll-beam {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scaleY(0.55);
+  }
+  28% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(32px) scaleY(1);
   }
 }
 
@@ -708,6 +902,28 @@ body {
   }
 }
 
+@keyframes quantum-boot-wave {
+  0% {
+    opacity: 0.72;
+    scale: 0.82;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.82;
+  }
+}
+
+@keyframes quantum-boot-dot {
+  0%, 100% {
+    opacity: 0.22;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-bg-ken-burns,
   .hero-v2-ken-burns,
@@ -722,10 +938,17 @@ body {
   .quantum-impact-particle,
   .quantum-impact-glyph,
   .quantum-blueprint-module,
+  .quantum-blueprint-horizon,
   .quantum-blueprint-scan,
   .quantum-blueprint-node,
-  .quantum-blueprint-server {
+  .quantum-blueprint-server,
+  .quantum-scroll-beam {
     animation: none;
+  }
+
+  .quantum-boot-wave,
+  .quantum-core-status i {
+    animation: none !important;
   }
 
   .card-fq:hover,

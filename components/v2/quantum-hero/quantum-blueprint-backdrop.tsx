@@ -45,12 +45,14 @@ export function QuantumBlueprintBackdrop({ scrollProgress }: QuantumBlueprintBac
   return (
     <motion.div
       aria-hidden
+      data-quantum-portfolio="active"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
-      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-[1] overflow-hidden"
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_48%,rgba(13,139,168,0.2),transparent_34%),radial-gradient(ellipse_at_50%_58%,rgba(7,49,62,0.13),transparent_68%)]" />
+      <div className="quantum-blueprint-horizon absolute left-[8%] right-[8%] top-[65%] h-px" />
 
       <motion.div style={{ x: farX, y: farY }} className="absolute inset-[-10%]">
         {BLUEPRINT_GLYPHS.map((glyph, index) => (
@@ -72,37 +74,47 @@ export function QuantumBlueprintBackdrop({ scrollProgress }: QuantumBlueprintBac
 
       <motion.div
         style={{ x: nearX, y: blueprintY, scale: blueprintScale, opacity: blueprintOpacity }}
-        className="quantum-blueprint-plane absolute left-1/2 top-1/2 h-[min(56vh,520px)] w-[min(72vw,980px)] -translate-x-1/2 -translate-y-1/2"
+        className="quantum-blueprint-plane absolute left-1/2 top-1/2 h-[min(55vh,520px)] w-[min(88vw,1280px)] -translate-x-1/2 -translate-y-1/2"
       >
-        <div className="quantum-blueprint-grid absolute inset-[-18%] opacity-45" />
+        <div className="quantum-blueprint-grid absolute inset-[-18%] opacity-65" />
         <div className="quantum-blueprint-scan absolute inset-x-[-6%] top-0 h-px bg-gradient-to-r from-transparent via-cyan-100/80 to-transparent" />
 
         <div className="relative grid h-full grid-cols-3 gap-[clamp(10px,1.6vw,24px)]">
-          <div className="quantum-blueprint-module quantum-blueprint-delay-1 relative overflow-hidden border border-cyan-100/20 bg-cyan-300/[0.025]">
-            <div className="flex h-9 items-center gap-1.5 border-b border-cyan-100/15 px-3">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-100/45" />
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-100/25" />
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-100/15" />
+          <div data-blueprint-module="software" className="quantum-blueprint-module quantum-blueprint-delay-1 relative overflow-hidden border border-cyan-100/30 bg-cyan-300/[0.055]">
+            <div className="flex h-14 items-center justify-between border-b border-cyan-100/22 px-4">
+              <div className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-cyan-100/55" />
+                <span className="h-1.5 w-1.5 rounded-full bg-cyan-100/32" />
+                <span className="h-1.5 w-1.5 rounded-full bg-cyan-100/20" />
+              </div>
+              <div className="text-right">
+                <span className="quantum-blueprint-label block">Software &amp; Produtos</span>
+                <span className="quantum-blueprint-descriptor">SaaS · Sistemas · Automações</span>
+              </div>
             </div>
             <div className="space-y-3 p-4">
-              <span className="block h-1 w-[62%] bg-cyan-100/36" />
-              <span className="block h-1 w-[38%] bg-cyan-100/16" />
+              <span className="block h-1 w-[62%] bg-cyan-100/52" />
+              <span className="block h-1 w-[38%] bg-cyan-100/24" />
               <div className="mt-6 grid grid-cols-3 gap-2">
-                <span className="h-14 border border-cyan-100/15 bg-cyan-200/[0.025]" />
-                <span className="h-14 border border-cyan-100/15 bg-cyan-200/[0.04]" />
-                <span className="h-14 border border-cyan-100/15 bg-cyan-200/[0.025]" />
+                <span className="h-14 border border-cyan-100/24 bg-cyan-200/[0.045]" />
+                <span className="h-14 border border-cyan-100/28 bg-cyan-200/[0.075]" />
+                <span className="h-14 border border-cyan-100/24 bg-cyan-200/[0.045]" />
               </div>
-              <div className="quantum-blueprint-chart relative mt-6 h-24 border-b border-l border-cyan-100/15" />
+              <div className="quantum-blueprint-chart relative mt-6 h-24 border-b border-l border-cyan-100/26" />
             </div>
           </div>
 
-          <div className="quantum-blueprint-module quantum-blueprint-delay-2 relative overflow-hidden border border-cyan-100/25 bg-cyan-300/[0.035]">
-            <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-100/28 shadow-[0_0_36px_rgba(34,211,238,0.12)]" />
-            <div className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-cyan-100/55 bg-cyan-100/[0.06]" />
+          <div data-blueprint-module="data-ai" className="quantum-blueprint-module quantum-blueprint-delay-2 relative overflow-hidden border border-cyan-100/36 bg-cyan-300/[0.075]">
+            <div className="absolute right-4 top-3 z-[2] text-right">
+              <span className="quantum-blueprint-label block">Data + IA</span>
+              <span className="quantum-blueprint-descriptor">Agentes · CRM · Integrações</span>
+            </div>
+            <div className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-100/38 shadow-[0_0_46px_rgba(34,211,238,0.2)]" />
+            <div className="absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-cyan-100/72 bg-cyan-100/[0.1] shadow-[0_0_20px_rgba(103,232,249,0.18)]" />
             {[0, 1, 2, 3, 4, 5].map((index) => (
               <span
                 key={index}
-                className="quantum-blueprint-node absolute h-3 w-3 rounded-full border border-cyan-100/45 bg-[#061116]"
+                className="quantum-blueprint-node absolute h-3 w-3 rounded-full border border-cyan-100/62 bg-[#061116]"
                 style={{
                   left: `${18 + (index % 3) * 32}%`,
                   top: `${20 + Math.floor(index / 3) * 58}%`,
@@ -110,23 +122,27 @@ export function QuantumBlueprintBackdrop({ scrollProgress }: QuantumBlueprintBac
                 }}
               />
             ))}
-            <span className="absolute left-[20%] top-[24%] h-px w-[62%] rotate-[24deg] bg-cyan-100/20" />
-            <span className="absolute left-[18%] top-[67%] h-px w-[66%] -rotate-[22deg] bg-cyan-100/20" />
-            <span className="absolute left-1/2 top-[18%] h-[64%] w-px -rotate-[11deg] bg-cyan-100/16" />
+            <span className="absolute left-[20%] top-[24%] h-px w-[62%] rotate-[24deg] bg-cyan-100/34" />
+            <span className="absolute left-[18%] top-[67%] h-px w-[66%] -rotate-[22deg] bg-cyan-100/34" />
+            <span className="absolute left-1/2 top-[18%] h-[64%] w-px -rotate-[11deg] bg-cyan-100/28" />
           </div>
 
-          <div className="quantum-blueprint-module quantum-blueprint-delay-3 relative overflow-hidden border border-cyan-100/20 bg-cyan-300/[0.025] p-4">
-            <div className="absolute inset-x-4 top-5 flex h-7 items-end gap-1 border-b border-cyan-100/15">
+          <div data-blueprint-module="cloud-infra" className="quantum-blueprint-module quantum-blueprint-delay-3 relative overflow-hidden border border-cyan-100/30 bg-cyan-300/[0.055] p-4">
+            <div className="absolute right-4 top-3 z-[2] text-right">
+              <span className="quantum-blueprint-label block">Cloud + Infra</span>
+              <span className="quantum-blueprint-descriptor">VPS · APIs · Monitoramento</span>
+            </div>
+            <div className="absolute inset-x-4 top-16 flex h-8 items-end gap-1 border-b border-cyan-100/24">
               {[32, 58, 44, 78, 66, 92, 74].map((height, index) => (
-                <span key={index} className="flex-1 bg-cyan-100/20" style={{ height: `${height}%` }} />
+                <span key={index} className="flex-1 bg-cyan-100/32" style={{ height: `${height}%` }} />
               ))}
             </div>
             <div className="absolute inset-x-5 bottom-7 space-y-3">
               {[0, 1, 2, 3].map((index) => (
-                <div key={index} className="quantum-blueprint-server flex h-10 items-center gap-3 border border-cyan-100/16 px-3" style={{ animationDelay: `${index * -0.3}s` }}>
-                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-100/55" />
-                  <span className="h-px flex-1 bg-cyan-100/18" />
-                  <span className="h-1 w-7 bg-cyan-100/12" />
+                <div key={index} className="quantum-blueprint-server flex h-10 items-center gap-3 border border-cyan-100/24 px-3" style={{ animationDelay: `${index * -0.3}s` }}>
+                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-100/72" />
+                  <span className="h-px flex-1 bg-cyan-100/28" />
+                  <span className="h-1 w-7 bg-cyan-100/20" />
                 </div>
               ))}
             </div>

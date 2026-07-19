@@ -42,28 +42,19 @@ export function QuantumHero({ scrollProgress, onReady }: QuantumHeroProps) {
   }, []);
 
   return (
-    <div ref={rootRef} className="relative h-full min-h-0 w-full overflow-hidden bg-[#020507]">
+    <div
+      ref={rootRef}
+      data-quantum-active={active ? 'true' : 'false'}
+      className="relative h-full min-h-0 w-full overflow-hidden bg-[#020507]"
+    >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_47%,rgba(34,211,238,0.22),rgba(8,145,178,0.07)_28%,transparent_61%)]" />
-      <div className="pointer-events-none absolute left-[var(--quantum-core-x,70%)] top-[var(--quantum-core-y,50%)] h-[58%] w-[45%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-200/[0.045] blur-[105px]" />
+      <div className="quantum-core-positioned pointer-events-none absolute left-[var(--quantum-core-x,50%)] top-[var(--quantum-core-y,50%)] h-[58%] w-[45%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-200/[0.045] blur-[105px]" />
 
       {fieldActive && <QuantumBlueprintBackdrop scrollProgress={scrollProgress} />}
 
       <div className="pointer-events-none absolute inset-0 z-[2]">
         <QuantumCanvas scrollProgress={scrollProgress} active={active} onReady={onReady} />
       </div>
-
-      <button
-        type="button"
-        data-quantum-logo-hotspot
-        aria-label="Segure para ativar o nucleo FatorQ; arraste para girar"
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            window.dispatchEvent(new Event('fatorq:request-activation'));
-          }
-        }}
-        className="pointer-events-auto absolute left-[var(--quantum-core-x,70%)] top-[var(--quantum-core-y,50%)] z-[4] h-[min(38vw,500px)] w-[min(38vw,500px)] -translate-x-1/2 -translate-y-1/2 touch-none select-none cursor-grab rounded-full bg-transparent outline-none focus-visible:ring-1 focus-visible:ring-cyan-200/60 active:cursor-grabbing"
-      />
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#020507] to-transparent" />
     </div>

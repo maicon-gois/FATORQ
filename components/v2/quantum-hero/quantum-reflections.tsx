@@ -2,15 +2,32 @@
 
 /* eslint-disable react-hooks/immutability -- Three.js owns and mutates the WebGL scene graph. */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 export function QuantumReflections() {
   const { gl, scene } = useThree();
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    const idleWindow = window as typeof window & {
+      requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (idleWindow.requestIdleCallback) {
+      const handle = idleWindow.requestIdleCallback(() => setEnabled(true), { timeout: 900 });
+      return () => idleWindow.cancelIdleCallback?.(handle);
+    }
+
+    const timeout = window.setTimeout(() => setEnabled(true), 240);
+    return () => window.clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
     const previousEnvironment = scene.environment;
     const pmrem = new THREE.PMREMGenerator(gl);
     const room = new RoomEnvironment();
@@ -23,7 +40,7 @@ export function QuantumReflections() {
       environment.dispose();
       pmrem.dispose();
     };
-  }, [gl, scene]);
+  }, [enabled, gl, scene]);
 
   return null;
 }

@@ -6,6 +6,6 @@ export const QuantumHeroLazy = dynamic(
   () => import('@/components/v2/quantum-hero/quantum-hero').then((mod) => mod.QuantumHero),
   {
     ssr: false,
-    loading: () => <div className="h-full min-h-[860px] w-full lg:min-h-[900px] xl:min-h-screen" />,
+    loading: () => <div className="h-full min-h-0 w-full" />,
   }
 );

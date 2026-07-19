@@ -61,29 +61,21 @@
     "items": [
       {
         "icon": "design",
-        "image": "/media/temp/services/service-montage.png",
-        "mediaCrop": "design",
         "title": "Estratégia & Design",
         "description": "Identidade visual, logo, redes sociais e UX centrado no usuário — produtos viáveis com alto engajamento."
       },
       {
         "icon": "code",
-        "image": "/media/temp/services/service-montage.png",
-        "mediaCrop": "development",
         "title": "Desenvolvimento de Software",
         "description": "Sistemas web, SaaS e automações sob medida — squads impulsionadas por IA com mais qualidade em menos tempo."
       },
       {
         "icon": "ai",
-        "image": "/media/temp/services/service-montage.png",
-        "mediaCrop": "ai",
         "title": "Data & AI Solutions",
         "description": "Agentes de IA, WhatsApp inteligente, CRM e integrações — da concepção à implementação em produção."
       },
       {
         "icon": "cloud",
-        "image": "/media/temp/services/service-montage.png",
-        "mediaCrop": "cloud",
         "title": "Arquitetura e Cloud",
         "description": "VPS, monitoramento, Zabbix, APIs e infraestrutura — sistemas de missão crítica sempre disponíveis."
       }
@@ -202,7 +194,6 @@
       {
         "name": "D2 Labs",
         "brand": "D2 Labs",
-        "image": "/media/temp/services/service-montage.png",
         "status": "production",
         "category": "Sistemas · Custom",
         "description": "Jurídico, clínicas e automações sob medida.",
@@ -248,10 +239,7 @@
   "humanProof": {
     "label": "Proximidade em cada etapa",
     "title": "Tecnologia com propósito. Resultados com parceria.",
-    "description": "Da descoberta ao suporte, cada projeto é conduzido com proximidade, documentação e responsabilidade sobre a entrega.",
-    "teamImage": "/media/temp/trust/team-fatorq.png",
-    "portraitImage": "/media/temp/trust/office-portrait.png",
-    "disclaimer": "Imagens ilustrativas temporárias."
+    "description": "Da descoberta ao suporte, cada projeto é conduzido com proximidade, documentação e responsabilidade sobre a entrega."
   },
   "finalCta": {
     "title": "Entre em contato e transforme seu negócio",

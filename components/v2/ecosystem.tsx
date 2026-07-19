@@ -11,6 +11,25 @@ const statusMap = {
   coming: { label: 'Em breve', class: 'bg-slate-500/15 text-slate-400 border-slate-500/30' },
 } as const;
 
+function D2LabsVisual() {
+  return (
+    <div className="absolute inset-0 overflow-hidden bg-[#071016]">
+      <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(103,232,249,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(103,232,249,0.07)_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(circle_at_center,black,transparent_82%)]" />
+      <div className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-3xl border border-cyan-200/25 bg-cyan-300/[0.045] shadow-[0_0_60px_rgba(34,211,238,0.13)] transition-transform duration-700 group-hover:rotate-[52deg] group-hover:scale-105" />
+      <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+        <span className="font-[family-name:var(--font-space)] text-3xl font-semibold tracking-[-0.05em] text-white">D2</span>
+        <span className="mt-1 text-[8px] uppercase tracking-[0.28em] text-cyan-200/70">Digital Labs</span>
+      </div>
+      <span className="absolute left-[13%] top-[24%] h-2 w-2 rounded-full border border-cyan-100/50 bg-[#071016] shadow-[0_0_14px_rgba(103,232,249,0.35)]" />
+      <span className="absolute right-[12%] top-[30%] h-2 w-2 rounded-full border border-cyan-100/40 bg-[#071016] shadow-[0_0_14px_rgba(103,232,249,0.25)]" />
+      <span className="absolute bottom-[18%] left-[23%] h-2 w-2 rounded-full border border-cyan-100/35 bg-[#071016]" />
+      <span className="absolute bottom-[20%] right-[20%] h-2 w-2 rounded-full border border-cyan-100/45 bg-[#071016]" />
+      <span className="absolute left-[14%] top-[28%] h-px w-[72%] rotate-[8deg] bg-gradient-to-r from-cyan-200/5 via-cyan-200/25 to-cyan-200/5" />
+      <span className="absolute bottom-[25%] left-[20%] h-px w-[61%] -rotate-[13deg] bg-gradient-to-r from-cyan-200/5 via-cyan-200/20 to-cyan-200/5" />
+    </div>
+  );
+}
+
 export function V2Ecosystem() {
   const { portfolio } = siteConfig;
   return (
@@ -27,12 +46,16 @@ export function V2Ecosystem() {
             return (
               <motion.article key={product.name} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} whileHover={{ y: -6 }} className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md transition-all hover:border-cyan-500/40 hover:shadow-[0_24px_70px_rgba(0,0,0,0.35)]">
                 <div className="relative aspect-[16/10] overflow-hidden border-b border-white/10 bg-[#0B1020]">
-                  <MediaImage
-                    src={product.image}
-                    alt={`Visual do produto ${product.name}`}
-                    sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 25vw"
-                    className={`${product.name === 'D2 Labs' ? 'scale-[2.04] origin-bottom-left group-hover:scale-[2.1]' : 'group-hover:scale-[1.04]'} object-cover object-center transition-transform duration-700`}
-                  />
+                  {product.name === 'D2 Labs' ? (
+                    <D2LabsVisual />
+                  ) : 'image' in product && product.image ? (
+                    <MediaImage
+                      src={product.image}
+                      alt={`Visual do produto ${product.name}`}
+                      sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 25vw"
+                      className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.04]"
+                    />
+                  ) : null}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050508]/75 via-transparent to-black/10" />
                   <span className={`absolute right-4 top-4 rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase backdrop-blur-md ${status.class}`}>{status.label}</span>
                 </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { type MotionValue } from 'motion/react';
 import * as THREE from 'three';
@@ -33,14 +33,14 @@ function QuantumCameraRig({ scrollProgress, experience }: Pick<QuantumCanvasProp
   return null;
 }
 
-function QuantumReadySignal({ onReady }: Pick<QuantumCanvasProps, 'onReady'>) {
+function QuantumReadySignal({ coreReady, onReady }: Pick<QuantumCanvasProps, 'onReady'> & { coreReady: React.RefObject<boolean> }) {
   const sent = useRef(false);
-  const stableFrames = useRef(0);
+  const renderedFrames = useRef(0);
 
-  useFrame((_, delta) => {
-    if (sent.current) return;
-    stableFrames.current = delta <= 1 / 35 ? stableFrames.current + 1 : 0;
-    if (stableFrames.current < 12) return;
+  useFrame(() => {
+    if (sent.current || !coreReady.current) return;
+    renderedFrames.current += 1;
+    if (renderedFrames.current < 2) return;
     sent.current = true;
     onReady();
   });
@@ -50,6 +50,10 @@ function QuantumReadySignal({ onReady }: Pick<QuantumCanvasProps, 'onReady'>) {
 
 export function QuantumCanvas({ scrollProgress, active, onReady }: QuantumCanvasProps) {
   const experience = useRef(createQuantumExperienceState());
+  const coreReady = useRef(false);
+  const markCoreReady = useCallback(() => {
+    coreReady.current = true;
+  }, []);
 
   return (
     <Canvas
@@ -65,13 +69,13 @@ export function QuantumCanvas({ scrollProgress, active, onReady }: QuantumCanvas
       className="!h-full !w-full"
     >
       <QuantumCameraRig scrollProgress={scrollProgress} experience={experience} />
-      <QuantumReadySignal onReady={onReady} />
+      <QuantumReadySignal coreReady={coreReady} onReady={onReady} />
       <QuantumReflections />
       <QuantumLights experience={experience} />
       <QuantumEnergyMembrane experience={experience} />
       <QuantumCinematicField experience={experience} scrollProgress={scrollProgress} />
       <QuantumEnvironment experience={experience} />
-      <QuantumModel experience={experience} />
+      <QuantumModel experience={experience} onCoreReady={markCoreReady} />
     </Canvas>
   );
 }
